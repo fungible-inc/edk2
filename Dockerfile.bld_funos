@@ -1,0 +1,43 @@
+ARG DOC_REG
+
+FROM ${DOC_REG}/run_funos:latest
+
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y make gcc-5 g++-5 python-pip git \
+	pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
+	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic
+
+RUN pip install PyYAML jinja2 ply
+
+# mips gcc
+RUN mkdir /opt/cross && \
+	curl -s http://dochub.fungible.local/doc/sw/tools/mips/linux-mips64-gcc-8.2.tar.gz | \
+	tar xfz - -C /opt/cross && \
+	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
+	tar xfz - -C /opt/cross
+
+# yocto
+ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/latest
+ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64-core2-64-toolchain-2.3.1.sh
+ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6-mipsisa64r6-toolchain-2.3.1.sh
+
+RUN wget -q ${yocto}/x86_64/${poky_x86} && \
+	wget -q ${yocto}/mips64/${poky_mips} && \
+	chmod 755 ${poky_x86} ${poky_mips} && \
+	./${poky_x86} && \
+	./${poky_mips} && \
+	rm -f ${poky_x86} ${poky_mips}
+
+# u-boot
+RUN apt-get update; apt-get install -y gcc-mips64-linux-gnuabi64
+
+# SBPFirmware
+RUN apt-get update; apt-get install -y libsofthsm2 softhsm2 python3 python3-pip cmake
+RUN pip install pycrypto ed25519 curve25519-donna  ecdsa cryptography
+RUN pip3 install python-pkcs11
+
+# To match version from SBPFirmware instructions.
+RUN git clone https://github.com/doegox/python-cryptoplus.git; cd python-cryptoplus; git checkout a5a1f8aecce4ddf476b2d80b586822d9e91eeb7d; python setup.py install
+
+ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
+
