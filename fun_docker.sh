@@ -1,5 +1,6 @@
-#!/bin/bash -x
+#!/bin/bash 
 
+[[ -n $_FUN_DOC_DEBUG ]] && set -x
 DOC_REG=fundocker.fungible.com
 ACTION=''
 IMG=''
@@ -7,7 +8,7 @@ DOCK_FILE=''
 DOCKER_OPTIONS="--build-arg DOC_REG=${DOC_REG}"
 arg_user=$(id -un)
 arg_uid=$(id -u)
-ver=$(date +%y.%m)
+VER=$(date +%y.%m)
 
 usage () {
 	echo "usage: $0 -a prepare|build|push -i image -f dockerfile passthrough args
@@ -45,20 +46,23 @@ prepare_ws () {
 	fi
 	
 	# new image rm it just in case.
-	/bin/tm -f $IMG
+	/bin/rm -f $IMG
 }
 
 # main
 
-while getopts :a:i:f:-: arg 
+while getopts :a:i:f: arg 
 do
 	case $arg in
-	a) ACTION="$OPTARG"
+	a)
+		ACTION="$OPTARG"
 		;;
-	i) IMG="$OPTARG"
+	i)
+		IMG="$OPTARG"
 		REG_IMG=${DOC_REG}/$IMG
 		;;
-	f) DOC_FILE="$OPTARG"
+	f)
+		DOC_FILE="$OPTARG"
 		[[ $DOC_FILE =~ .usr ]] && DOCKER_OPTIONS="$DOCKER_OPTIONS --build-arg arg_user=$arg_user --build-arg arg_uid=$arg_uid"
 		;;
 	\?) usage 0
@@ -67,20 +71,23 @@ do
 done
 shift $((OPTIND -1))
 
-[[ $ACTION == '' || $IMG == '' || $DOC_FILE == '' ]] && usage 1
+[[ $ACTION == '' || $IMG == '' ]] && usage 1
 
 case $ACTION in 
 prepare)
+	[[ $DOC_FILE == '' ]] && usage 1
 	prepare_ws
 	;;
 build)
+	[[ $DOC_FILE == '' ]] && usage 1
 	docker build -t $IMG -f $DOC_FILE $DOCKER_OPTIONS .
 	[[ $? -eq 0 ]] && echo $IMG >> push_images
 	;;
 push)
 	docker tag $IMG ${REG_IMG}:$VER
 	docker tag $REG_IMG ${REG_IMG}:latest
-	echo docker push $REG_IMG ${REG_IMG}:$VER ${REG_IMG}:latest
+	docker push ${REG_IMG}:$VER
+	docker push ${REG_IMG}:latest
 	;;
 *)
 	echo "Something wrong"

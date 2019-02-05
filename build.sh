@@ -2,16 +2,16 @@
 
 who_am_i=$(id -un)
 MK_OPTS="-f doc.mk arg_user=$who_am_i"
-DOC_REG=fundocker.fungible.com
 ALL_IMGS=''
 PUSH=''
 img_list=
 doc_file_list=
 
 usage () {
-	echo "usage: $0 [-p] [-c] -a|image ..."
+	echo "usage: $0 [-v] [-p] [-c] -a|image ..."
 	echo "       $0 -c"
 	echo "where, "
+	echo "       -v     verbose"
 	echo "       -c     clean the workspace"
 	echo "       -p     clean and push after building image(s)"
 	echo "       -a     build all images"
@@ -63,11 +63,14 @@ process_cli_imgs () {
 
 # main
 
-while getopts :cap arg
+while getopts :vcap arg
 do
 	case $arg in
 	p) PUSH=true
 		make $MK_OPTS clean
+		;;
+	v) export _FUN_DOC_DEBUG=1
+		set -x
 		;;
 	a) ALL_IMGS=true
 		;;
@@ -98,7 +101,7 @@ then
 	built_imgs=$(cat push_images)
 	for img in $built_imgs
 	do
-		fun_docker.sh -a push -i $DOC_REG/$img 
+		fun_docker.sh -a push -i $img 
 	done
 	docker rmi $built_imgs
 fi
