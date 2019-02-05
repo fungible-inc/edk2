@@ -85,9 +85,10 @@ build)
 	;;
 push)
 	docker tag $IMG ${REG_IMG}:$VER
-	docker tag $REG_IMG ${REG_IMG}:latest
+	docker tag $IMG ${REG_IMG}:latest
 	docker push ${REG_IMG}:$VER
 	docker push ${REG_IMG}:latest
+	docker rmi $IMG
 	;;
 *)
 	echo "Something wrong"

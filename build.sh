@@ -103,5 +103,4 @@ then
 	do
 		fun_docker.sh -a push -i $img 
 	done
-	docker rmi $built_imgs
 fi
