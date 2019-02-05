@@ -2,6 +2,7 @@
 
 who_am_i=$(id -un)
 MK_OPTS="-f doc.mk arg_user=$who_am_i"
+DOC_REG=fundocker.fungible.com
 ALL_IMGS=''
 PUSH=''
 img_list=
@@ -97,7 +98,7 @@ then
 	built_imgs=$(cat push_images)
 	for img in $built_imgs
 	do
-		fun_docker.sh -a push -i $img 
+		fun_docker.sh -a push -i $DOC_REG/$img 
 	done
 	docker rmi $built_imgs
 fi
