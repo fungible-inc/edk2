@@ -8,7 +8,7 @@ img_list=
 doc_file_list=
 
 usage () {
-	echo "usage: $0 [-v] [-p] [-c] -a|image ..."
+	echo "usage: $0 [-v] [-p] -a|image ..."
 	echo "       $0 -c"
 	echo "where, "
 	echo "       -v     verbose"

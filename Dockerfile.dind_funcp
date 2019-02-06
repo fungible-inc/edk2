@@ -22,7 +22,7 @@ ARG arg_uid=835800152
 RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 	useradd -l -m -u $arg_uid -s /bin/sh $arg_user && \
 	usermod -aG docker $arg_user && \
-	echo "jenkins ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
+	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
 
 # just added jenkins to docker group, need a new login session.
 ENV USER jenkins
