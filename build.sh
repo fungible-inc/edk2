@@ -51,7 +51,6 @@ process_cli_imgs () {
 			[[ $usr != $who_am_i ]] && echo "You can only build for yourself, not $usr" && exit 1
 			img_list="$img_list $usr/$img"
 			doc_file_list="$doc_file_list Dockerfile.${img}.usr"
-			mkdir -p $usr
 		else
 			img_list="$img_list $img"
 			doc_file_list="$doc_file_list Dockerfile.${img}"
@@ -93,6 +92,8 @@ else
 	process_cli_imgs
 fi
 
+/bin/rm -f *.log
+mkdir -p $who_am_i
 make $MK_OPTS ACTION=prepare $img_list
 make $MK_OPTS ACTION=build $img_list
 
