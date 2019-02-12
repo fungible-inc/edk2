@@ -10,11 +10,11 @@ Docker images are pushed to private registry at docker.fungible.com. Toplevel di
 
 ## Registry contents
 
-run_funos        
-bld_funos
-dind_funcp
-jenkins/run_funos
-jenkins/bld_funos
+- run_funos        
+- bld_funos
+- dind_funcp
+- jenkins/run_funos
+- jenkins/bld_funos
 
 ## Process
 
