@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 [[ -n $_FUN_DOC_DEBUG ]] && set -x
-DOC_REG=fundocker.fungible.com
+DOC_REG=docker.fungible.com
 ACTION=''
 IMG=''
 DOCK_FILE=''
