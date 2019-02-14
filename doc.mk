@@ -11,7 +11,7 @@ images += dind_funcp
 all: $(images)
 
 clean: 
-	/bin/rm -rf push_images $(images) $(arg_user)
+	/bin/rm -rf *.log $(images) $(arg_user)
 	- docker rmi $(images)
 
 run_funos: Dockerfile.run_funos

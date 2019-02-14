@@ -29,7 +29,7 @@ prepare_ws () {
 	touch $DOC_FILE --date=@$(git log -n1 --pretty=format:%ct $DOC_FILE)
 	
 	# touch img file if image pulled / exists 
-	docker pull ${REG_IMG}:latest 2> /dev/null > ${IMG}.pull.log
+	docker pull ${REG_IMG} 2> /dev/null > ${IMG}.pull.log
 	if [[ $? -eq 0 ]]
 	then
 		iso_date=$(docker inspect -f '{{ .Created }}' ${REG_IMG}:latest)
@@ -38,7 +38,7 @@ prepare_ws () {
 	fi
 
 	# Image not in registry, check local
-	iso_date=$(docker inspect -f '{{ .Created }}' ${IMG}:latest 2> /dev/null)
+	iso_date=$(docker inspect -f '{{ .Created }}' ${IMG} 2> /dev/null)
 	if [[ $? -eq 0 ]]
 	then
 		touch --date=${iso_date} $IMG
@@ -78,14 +78,14 @@ prepare)
 build)
 	[[ $DOC_FILE == '' ]] && usage 1
 	docker build -t $IMG -f $DOC_FILE $DOCKER_OPTIONS . > ${IMG}.bld.log
-	[[ $? -eq 0 ]] && echo $IMG >> push_images
-	;;
-push)
-	docker tag $IMG ${REG_IMG}:$VER
-	docker tag $IMG ${REG_IMG}:latest
-	docker push ${REG_IMG}:$VER
-	docker push ${REG_IMG}:latest
-	docker rmi $IMG
+	[[ $? -ne 0 ]] && cat ${IMG}.bld.log && exit 1
+	if [[ $_PUSH_IMAGE == 'true' ]]
+	then
+		docker tag $IMG ${REG_IMG}
+		docker push ${REG_IMG}
+		docker rmi $IMG
+	fi
+	touch ${IMG}
 	;;
 *)
 	echo "Something wrong"

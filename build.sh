@@ -3,18 +3,18 @@
 who_am_i=$(id -un)
 MK_OPTS="-f doc.mk arg_user=$who_am_i"
 ALL_IMGS=''
-PUSH=''
+_PUSH_IMAGE=''
 img_list=
 doc_file_list=
 
 usage () {
-	echo "usage: $0 [-v] [-p] -a|image ..."
+	echo "usage: $0 [-v] [-p] -u|image ..."
 	echo "       $0 -c"
 	echo "where, "
 	echo "       -v     verbose"
 	echo "       -c     clean the workspace"
 	echo "       -p     clean and push after building image(s)"
-	echo "       -a     build all images"
+	echo "       -s     show all image names"
 	echo "       image  one or more image name"
 	exit $1
 }
@@ -34,8 +34,6 @@ get_all_imgs () {
 		fi
 		img_list="$img_list $img"
 	done
-	echo $img_list
-	echo $doc_file_list
 }
 
 process_cli_imgs () {
@@ -62,14 +60,19 @@ process_cli_imgs () {
 
 # main
 
-while getopts :vcap arg
+while getopts :vcasp arg
 do
 	case $arg in
-	p) PUSH=true
+	p) _PUSH_IMAGE=true
 		make $MK_OPTS clean
 		;;
 	v) export _FUN_DOC_DEBUG=1
 		set -x
+		;;
+	s) 
+		get_all_imgs
+		echo "Images: $img_list"
+		exit 0
 		;;
 	a) ALL_IMGS=true
 		;;
@@ -86,22 +89,15 @@ cli_imgs=$*
 if [[ $ALL_IMGS ]]
 then
 	[[ $cli_imgs ]] && echo "-a if given so ignoring command line images: $cli_imgs"
-	get_all_imgs
+	get_all_imgs 
+	echo "Images: $img_list"
 else
-	[[ ! $cli_imgs ]] && echo "option -a or at least one image arg is required" && usage 1
+	[[ ! $cli_imgs ]] && echo "At least one image arg is required, see $0 -s for image names" && usage 1
 	process_cli_imgs
 fi
 
 /bin/rm -f *.log
 mkdir -p $who_am_i
+export _PUSH_IMAGE
 make $MK_OPTS ACTION=prepare $img_list
 make $MK_OPTS ACTION=build $img_list
-
-if [[ $PUSH == 'true' ]]
-then
-	built_imgs=$(cat push_images)
-	for img in $built_imgs
-	do
-		fun_docker.sh -a push -i $img 
-	done
-fi
