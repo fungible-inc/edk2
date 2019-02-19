@@ -28,22 +28,28 @@ Any user can build wrapper images for their use on their laptops or development 
 
 FunOS related builds based on FunJenkins pipeline use these docker images via docker pipeline plugin. Any user can make use of these docker images to build and run tests inside a container on their development machines. For example:
 
+```
 $> docker pull docker.fungible.com/bld_funos:latest
 $> docker run [options] docker.fungible.com/bld_funos [build commands]
+```
 
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
+```
 $> docker run -t --rm --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos make MACHINE=f1
+```
 
 You could write a wrapper script with all your personal customization to suit your needs. For example:
 
 With a simple doc_run bash script shown below, one can execute doc_run make MACHINE=posix or doc_run FunOS/scripts/build_test.sh mips-f1
 
-\#!/bin/bash
+``` bash
+#!/bin/bash
 export WORKSPACE=$PWD
 cd FunDocker
 git pull
 ./build.sh $USER/bld_funos
 cd $WORKSPACE
 docker run -t --rm --cap-add SYS_PTRACE -v $PWD:$PWD -v $HOME:/home/$USER -w $PWD $USER/bld_funos $*
+```
 
