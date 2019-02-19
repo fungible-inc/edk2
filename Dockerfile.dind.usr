@@ -3,7 +3,7 @@
 FROM ubuntu:18.04
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y sudo wget python python-pip bridge-utils net-tools \
-	sudo apt-transport-https ca-certificates curl software-properties-common
+	sudo apt-transport-https ca-certificates curl software-properties-common make
 
 RUN	pip install pexpect
 
@@ -17,14 +17,14 @@ RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 # lastlog and faillog create huge sparse file if the uid is a very large number as in LDAP uid.
 # just delete them as suggested by https://github.com/sagemathinc/cocalc/issues/2287
 # also add -l to useradd
-ARG arg_user=jenkins
-ARG arg_uid=835800152
+ARG arg_user
+ARG arg_uid
+
 RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 	useradd -l -m -u $arg_uid -s /bin/sh $arg_user && \
 	usermod -aG docker $arg_user && \
 	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
 
 # just added jenkins to docker group, need a new login session.
-ENV USER jenkins
-ENTRYPOINT ["sudo", "-Eu", "jenkins"]
-CMD id
+ENV USER $arg_user
+CMD ["/bin/bash"]

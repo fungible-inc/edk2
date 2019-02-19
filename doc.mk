@@ -5,7 +5,7 @@ images = run_funos
 images += $(arg_user)/run_funos 
 images += bld_funos 
 images += $(arg_user)/bld_funos
-images += dind_funcp
+images += $(arg_user)/dind
 #images += $(arg_user)/bld_sbp
 
 all: $(images)
@@ -32,6 +32,6 @@ $(arg_user)/bld_funos: bld_funos
 $(arg_user)/bld_funos: Dockerfile.bld_funos.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
-dind_funcp: Dockerfile.dind_funcp
+$(arg_user)/dind: Dockerfile.dind.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 

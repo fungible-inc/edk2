@@ -29,6 +29,7 @@ prepare_ws () {
 	touch $DOC_FILE --date=@$(git log -n1 --pretty=format:%ct $DOC_FILE)
 	
 	# touch img file if image pulled / exists 
+	echo Pulling docker image ${REG_IMG}...
 	docker pull ${REG_IMG} 2> /dev/null > ${IMG}.pull.log
 	if [[ $? -eq 0 ]]
 	then
@@ -77,10 +78,13 @@ prepare)
 	;;
 build)
 	[[ $DOC_FILE == '' ]] && usage 1
+	echo Building docker image $IMG...
+	docker rmi $IMG 2> /dev/null
 	docker build -t $IMG -f $DOC_FILE $DOCKER_OPTIONS . > ${IMG}.bld.log
 	[[ $? -ne 0 ]] && cat ${IMG}.bld.log && exit 1
 	if [[ $_PUSH_IMAGE == 'true' ]]
 	then
+		docker rmi $REG_IMG
 		docker tag $IMG ${REG_IMG}
 		docker push ${REG_IMG}
 		docker rmi $IMG
