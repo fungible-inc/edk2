@@ -36,7 +36,7 @@ $> docker run [options] docker.fungible.com/bld_funos [build commands]
 You may need to update certificate store on your machine to pull images via SSL from private registry. To do so:
 
 ```
-sudo  cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
+sudo cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
 sudo update-ca-certificates -v -f
 sudo /sbin/shutdown -r now
 ```
