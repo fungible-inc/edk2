@@ -32,6 +32,13 @@ FunOS related builds based on FunJenkins pipeline use these docker images via do
 $> docker pull docker.fungible.com/bld_funos:latest
 $> docker run [options] docker.fungible.com/bld_funos [build commands]
 ```
+#### Note: 
+You may need to update certificate store on your machine to pull images via SSL from private registry. To do so:
+
+```
+sudo  cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates -v -f
+```
 
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 

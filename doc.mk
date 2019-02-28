@@ -6,7 +6,7 @@ images += $(arg_user)/run_funos
 images += bld_funos 
 images += $(arg_user)/bld_funos
 images += $(arg_user)/dind
-#images += $(arg_user)/bld_sbp
+images += integ_test
 
 all: $(images)
 
@@ -33,5 +33,8 @@ $(arg_user)/bld_funos: Dockerfile.bld_funos.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 $(arg_user)/dind: Dockerfile.dind.usr
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+integ_test: Dockerfile.integ_test
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 

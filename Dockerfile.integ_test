@@ -1,0 +1,10 @@
+FROM ubuntu:18.04
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests -y \
+	python bc openssh-client cpio libtool libasan5 less curl wget libcap2 libpci3 \
+	libpng16-16 libpixman-1-0 libfdt1 libglib2.0-0 tcpdump sudo ethtool iproute2 iputils-ping \
+	net-tools bridge-utils python-pip python-setuptools libpython-dev python-dev
+
+RUN pip install --upgrade pip setuptools subprocess32
+
+ENV WORKSPACE /workspace
