@@ -1,5 +1,6 @@
 # This is a dockerfile to build a docker in docker (dind) image with the user who is building 
 #
+# ubunut 18.04.2 with kernel version 4.18.0-16
 FROM ubuntu:bionic-20190307
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y sudo wget python python-pip bridge-utils net-tools \
