@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:bionic-20190307
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python curl libpixman-1-0 \
 	libfdt-dev libglib2.0-dev ssh gcovr cpu-checker

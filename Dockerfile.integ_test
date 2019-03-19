@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:bionic-20190307
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests -y \
 	python bc openssh-client cpio libtool libasan5 less curl wget libcap2 libpci3 \
