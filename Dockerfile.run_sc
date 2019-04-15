@@ -1,0 +1,15 @@
+# ubunut 17.04.2 with kernel version 4.18.0-16
+FROM ubuntu:bionic-20190307
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y python curl ssh curl net-tools software-properties-common python-pip debconf-utils apt-utils openjdk-8-jre
+
+RUN curl -s http://mirror.csclub.uwaterloo.ca/apache/kafka/2.1.1/kafka_2.12-2.1.1.tgz | tar xvz -C / && \ 
+    mv kafka_2.12-2.1.1 /kafka && \
+    sed -i 's/group.initial.rebalance.delay.ms=0/group.initial.rebalance.delay.ms=3000/' /kafka/config/server.properties
+
+RUN echo "deb http://www.apache.org/dist/cassandra/debian 36x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+    curl https://www.apache.org/dist/cassandra/KEYS | apt-key add - && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y cassandra
+
+RUN pip install Flask==0.10.1 flask-cors kafka-python redis enum34 requests thrift cassandra-driver grpc grpcio grpcio-tools
