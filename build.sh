@@ -60,11 +60,13 @@ process_cli_imgs () {
 
 # main
 
-while getopts :vcasp arg
+while getopts :vcaspt arg
 do
 	case $arg in
 	p) _PUSH_IMAGE=true
 		make $MK_OPTS clean
+		;;
+	t) _TAG_IMAGE=true
 		;;
 	v) export _FUN_DOC_DEBUG=1
 		set -x
@@ -99,5 +101,6 @@ fi
 /bin/rm -f *.log
 mkdir -p $who_am_i
 export _PUSH_IMAGE
+export _TAG_IMAGE
 make $MK_OPTS ACTION=prepare $img_list
 make $MK_OPTS ACTION=build $img_list

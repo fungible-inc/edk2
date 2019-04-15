@@ -84,10 +84,14 @@ build)
 	[[ $? -ne 0 ]] && cat ${IMG}.bld.log && exit 1
 	if [[ $_PUSH_IMAGE == 'true' ]]
 	then
-		docker rmi $REG_IMG
+		docker rmi $REG_IMG 2> /dev/null
 		docker tag $IMG ${REG_IMG}
 		docker push ${REG_IMG}
 		docker rmi $IMG
+	elif [[ $_TAG_IMAGE == 'true' ]]
+	then
+		docker rmi $REG_IMG 2> /dev/null
+		docker tag $IMG ${REG_IMG}
 	fi
 	touch ${IMG}
 	;;

@@ -1,5 +1,5 @@
-# ubunut 17.04.2 with kernel version 4.18.0-16
-FROM docker.fungible.com/run_sc:latest
+ARG DOC_REG
+FROM ${DOC_REG}/run_sc:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python zip git protobuf-compiler python-openssl \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
@@ -7,20 +7,20 @@ RUN apt-get update && \
 
 # Storage Controller build dependencies
 RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.tar.gz | tar xvz -C / && \
-    cd /thrift-0.12.0 && \
-    sh bootstrap.sh && \
-    sh configure && \
-    make && \
-    make install && \
-    rm -rf /thrift-0.12.0
+	cd /thrift-0.12.0 && \
+	sh bootstrap.sh && \
+	sh configure && \
+	make && \
+	make install && \
+	rm -rf /thrift-0.12.0
 RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar zxv && \
-    cd /librdkafka-1.0.0 && \
-    ./configure && \
-    make && \
-    make install  && \
-    rm -rf /librdkafka-1.0.0
+	cd /librdkafka-1.0.0 && \
+	./configure && \
+	make && \
+	make install  && \
+	rm -rf /librdkafka-1.0.0
 RUN curl -s https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
 RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
-    unzip protoc-3.7.0-linux-x86_64.zip -d /usr/local && \
-    /usr/local/go/bin/go get -d -u github.com/golang/protobuf/protoc-gen-go && \
-    /usr/local/go/bin/go install github.com/golang/protobuf/protoc-gen-go
+	unzip protoc-3.7.0-linux-x86_64.zip -d /usr/local && \
+	/usr/local/go/bin/go get -d -u github.com/golang/protobuf/protoc-gen-go && \
+	/usr/local/go/bin/go install github.com/golang/protobuf/protoc-gen-go
