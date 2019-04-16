@@ -37,10 +37,14 @@ You may need to update certificate store on your machine to pull images via SSL 
 
 ```
 sudo cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates -v -f
+sudo update-ca-certificates -v -f 
 sudo /sbin/shutdown -r now
 ```
 Note: You can scp certificates file from any machine where LDAP authentication is in place. e.g. vnc-shared-??
+
+```
+sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungible.com.crt /usr/local/share/ca-certificates
+```
 
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
