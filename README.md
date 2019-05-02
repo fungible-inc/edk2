@@ -45,6 +45,14 @@ Note: You can scp certificates file from any machine where LDAP authentication i
 ```
 sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungible.com.crt /usr/local/share/ca-certificates
 ```
+#### Note: Docker installation instruction:
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
+sudo apt-get update 
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-compose
+sudo usermod -aG docker your_userid
+```
 
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
