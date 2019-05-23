@@ -3,7 +3,7 @@ FROM ${DOC_REG}/run_sc:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python zip git protobuf-compiler python-openssl \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
-	automake libboost-all-dev libssl-dev byacc
+	automake libboost-all-dev libssl1.0-dev byacc nodejs npm
 
 # Storage Controller build dependencies
 RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.tar.gz | tar xvz -C / && \
