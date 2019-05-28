@@ -51,11 +51,6 @@ and then
 sudo update-ca-certificates -v -f 
 sudo /sbin/shutdown -r now
 ```
-Note: You can scp certificates file from any machine where LDAP authentication is in place. e.g. vnc-shared-??
-
-```
-sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungible.com.crt /usr/local/share/ca-certificates
-```
 #### Note: Docker installation instruction:
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
