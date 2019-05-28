@@ -37,6 +37,17 @@ You may need to update certificate store on your machine to pull images via SSL 
 
 ```
 sudo cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
+```
+or use your ldap credentials to scp from an VNC server
+```
+sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungible.com.crt /usr/local/share/ca-certificates
+```
+or from dochub
+```
+curl http://dochub.fungible.local/doc/sw/tools/fungible.com-certs/fungible.com.crt > /usr/local/share/ca-certificates/fungible.com.crt
+```
+and then
+```
 sudo update-ca-certificates -v -f 
 sudo /sbin/shutdown -r now
 ```
