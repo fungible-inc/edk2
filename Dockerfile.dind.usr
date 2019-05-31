@@ -28,4 +28,5 @@ RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 
 # just added jenkins to docker group, need a new login session.
 ENV USER $arg_user
+USER $arg_user
 CMD ["/bin/bash"]
