@@ -1,6 +1,52 @@
 ARG DOC_REG
 FROM ${DOC_REG}/run_funos:latest
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends iproute2 redis-server python-pip python-thrift
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+	iproute2 redis-server python-pip python-thrift sudo libconfig9 libnl-3-200 libnl-route-3-200 \
+	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping
 
-RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis 
+RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
+RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
+RUN pip install --upgrade-strategy only-if-needed thrift==0.11.0
+
+# FRR login
+RUN groupadd -g 92 frr && groupadd -r -g 85 frrvty && \
+	adduser --system --ingroup frr --home /var/run/frr --gecos "FRR suite" --shell /sbin/nologin frr && \
+	usermod -a -G frrvty frr
+
+# Fungible login
+RUN groupadd -g 3201 fungible && \
+	useradd -l -m -u 3201 -g fungible -s /bin/bash fcpusr && \
+	echo "fcpusr ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
+
+RUN install -m 755 -o frr -g frr -d /var/log/frr && \
+	install -m 775 -o frr -g frrvty -d /etc/frr && \
+	install -m 640 -o frr -g frr /dev/null /etc/frr/zebra.conf && \
+	install -m 640 -o frr -g frr /dev/null /etc/frr/bgpd.conf && \
+	install -m 640 -o frr -g frr /dev/null /etc/frr/isisd.conf && \
+	install -m 640 -o frr -g frrvty /dev/null /etc/frr/vtysh.conf
+
+# Add /opt/fungible/lib in ld path
+RUN echo /opt/fungible/lib > /etc/ld.so.conf.d/fungible.conf
+
+# PATH
+RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environment
+
+#RUN mkdir /var/run/sshd
+
+# temp, need to take it from multi-stage docker for JSONC libjson-c.4, redis.conf, zmq
+COPY cclinux.tar /tmp
+RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar
+
+ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
+ARG REDISCONF_LOCAL_DIR=/etc/redis/
+ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
+RUN chmod a+rwx /etc/redis/redis.conf; touch /var/log/redis.log; chmod a+rwx /var/log/redis.log; chmod a+rwx /var/lib/redis/;  mkdir -p /var/lib/redis/6379; chmod a+rwx /var/lib/redis/6379
+
+# set the enviroment for the build
+WORKDIR /home/fcpusr
+# some test script expets $USER to be set
+ENV USER fcpusr
+USER fcpusr
+CMD ["/bin/bash"]
+

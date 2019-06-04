@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 [[ -n $_FUN_DOC_DEBUG ]] && set -x
 DOC_REG=docker.fungible.com
@@ -11,23 +11,15 @@ arg_uid=$(id -u)
 VER=$(date +%y.%m)
 
 usage () {
-	echo "usage: $0 -a prepare|build|push -i image -f dockerfile passthrough args
+	echo "usage: $0 -a prepare|build -i image -f dockerfile passthrough args
 	echo "\nwhere,"
 	echo "\nprepare: Prepares the workspace by adjusting timestamps of git file and docker image file"
-	echo "build:	 Build docker image for give dockerfile and passthrough args"
-	echo "push:    Tag and push the image"
+	echo "build:	 Build docker image for give dockerfile and passthrough args, tag and optionally push"
 	"
 	exit $1
 }
 
 prepare_ws () {
-	# Adjust Dockerfile timestamp
-	git ls-files --error-unmatch $DOC_FILE > /dev/null 2>&1
-	[[ $? -ne 0 ]] && return 0 # unmodified git tracked file
-	git ls-files -m --error-unmatch $DOC_FILE > /dev/null 2>&1
-	[[ $? -eq 0 ]] && return 0 # locally modified git tracked file
-	touch $DOC_FILE --date=@$(git log -n1 --pretty=format:%ct $DOC_FILE)
-	
 	# touch img file if image pulled / exists 
 	echo Pulling docker image ${REG_IMG}...
 	docker pull ${REG_IMG} 2> /dev/null > ${IMG}.pull.log
@@ -35,14 +27,24 @@ prepare_ws () {
 	then
 		iso_date=$(docker inspect -f '{{ .Created }}' ${REG_IMG}:latest)
 		touch --date=${iso_date} $IMG
-		return 0
+	else
+		# Image not in registry, check local
+		iso_date=$(docker inspect -f '{{ .Created }}' ${IMG} 2> /dev/null)
+		if [[ $? -eq 0 ]]
+		then
+			touch --date=${iso_date} $IMG
+		else
+			rm -f $IMG # remove if left over kruft
+		fi
 	fi
 
-	# Image not in registry, check local
-	iso_date=$(docker inspect -f '{{ .Created }}' ${IMG} 2> /dev/null)
+	# Adjust Dockerfile timestamp
+	# reset file timestamp to last commit time if unmodifed git file 
+	git ls-files --error-unmatch $DOC_FILE > /dev/null 2>&1
 	if [[ $? -eq 0 ]]
 	then
-		touch --date=${iso_date} $IMG
+		echo "unmodified git tracked file"
+		touch $DOC_FILE --date=@$(git log -n1 --pretty=format:%ct $DOC_FILE)
 		return 0
 	fi
 }
@@ -79,21 +81,18 @@ prepare)
 build)
 	[[ $DOC_FILE == '' ]] && usage 1
 	echo Building docker image $IMG...
-	docker rmi $IMG 2> /dev/null
+	docker rmi $IMG 2> /dev/null || :
 	docker build -t $IMG -f $DOC_FILE $DOCKER_OPTIONS . > ${IMG}.bld.log
 	[[ $? -ne 0 ]] && cat ${IMG}.bld.log && exit 1
+	docker tag $IMG ${REG_IMG}
 	if [[ $_PUSH_IMAGE == 'true' ]]
 	then
-		docker rmi $REG_IMG 2> /dev/null
-		docker tag $IMG ${REG_IMG}
 		docker push ${REG_IMG}
-		docker rmi $IMG
-	elif [[ $_TAG_IMAGE == 'true' ]]
-	then
-		docker rmi $REG_IMG 2> /dev/null
-		docker tag $IMG ${REG_IMG}
+		[[ $? -ne 0 ]] && echo Failed to push ${REG_IMG} && exit 1
+		echo ${REG_IMG} >> pushed
 	fi
-	touch ${IMG}
+	iso_date=$(docker inspect -f '{{ .Created }}' ${IMG} 2> /dev/null)
+	touch --date=${iso_date} $IMG
 	;;
 *)
 	echo "Something wrong"

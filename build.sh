@@ -16,6 +16,8 @@ usage () {
 	echo "       -p     clean and push after building image(s)"
 	echo "       -s     show all image names"
 	echo "       image  one or more image name"
+	# hidden option for automation
+	# echo "       -a     build all main images and user wrappers for service account jenkins"
 	exit $1
 }
 
@@ -63,22 +65,24 @@ process_cli_imgs () {
 while getopts :vcaspt arg
 do
 	case $arg in
-	p) _PUSH_IMAGE=true
+	p) # push image to registry
+		_PUSH_IMAGE=true
 		make $MK_OPTS clean
 		;;
-	t) _TAG_IMAGE=true
-		;;
-	v) export _FUN_DOC_DEBUG=1
+	v) # verbose
+		export _FUN_DOC_DEBUG=1
 		set -x
 		;;
-	s) 
+	s) # show image names
 		get_all_imgs
 		echo "Images: $img_list"
 		exit 0
 		;;
-	a) ALL_IMGS=true
+	a) # all images, main + headless
+		ALL_IMGS=true
 		;;
-	c) make $MK_OPTS clean
+	c) # clean workspace
+		make $MK_OPTS clean
 		exit 0
 		;;
 	\?) usage 0
@@ -90,7 +94,7 @@ shift $((OPTIND -1))
 cli_imgs=$*
 if [[ $ALL_IMGS ]]
 then
-	[[ $cli_imgs ]] && echo "-a if given so ignoring command line images: $cli_imgs"
+	[[ $cli_imgs ]] && echo "-a is given so ignoring command line images: $cli_imgs"
 	get_all_imgs 
 	echo "Images: $img_list"
 else
@@ -98,9 +102,8 @@ else
 	process_cli_imgs
 fi
 
-/bin/rm -f *.log
+/bin/rm -f *.log */*.log pushed
 mkdir -p $who_am_i
 export _PUSH_IMAGE
-export _TAG_IMAGE
 make $MK_OPTS ACTION=prepare $img_list
 make $MK_OPTS ACTION=build $img_list
