@@ -2,5 +2,5 @@
 FROM ubuntu:bionic-20190307
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python curl libpixman-1-0 \
-	libfdt-dev libglib2.0-dev ssh gcovr cpu-checker
+	libfdt-dev libglib2.0-dev ssh gcovr cpu-checker libnl-3-200 libnl-route-3-200
 ENV ASAN_OPTIONS disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1

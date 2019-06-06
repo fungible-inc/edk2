@@ -5,7 +5,8 @@ FROM ${DOC_REG}/run_funos:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y make gcc-5 g++-5 python-pip git \
 	pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
-	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic
+	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic \
+	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool
 
 RUN pip install PyYAML jinja2 ply
 
