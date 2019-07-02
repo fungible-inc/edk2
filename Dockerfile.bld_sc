@@ -3,7 +3,7 @@ FROM ${DOC_REG}/run_sc:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python zip git protobuf-compiler python-openssl \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
-	automake libboost-all-dev libssl1.0-dev byacc nodejs npm
+	automake libboost-all-dev libssl1.0-dev byacc nodejs npm cmake
 
 # Storage Controller build dependencies
 RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.tar.gz | tar xvz -C / && \
@@ -24,3 +24,10 @@ RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/pr
 	unzip protoc-3.7.0-linux-x86_64.zip -d /usr/local && \
 	/usr/local/go/bin/go get -d -u github.com/golang/protobuf/protoc-gen-go && \
 	/usr/local/go/bin/go install github.com/golang/protobuf/protoc-gen-go
+
+RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
+        cd cpp_redis && \
+        git submodule init && git submodule update && \
+        mkdir build && cd build && \
+        cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && \
+        cd ../.. && rm -rf cpp_redis
