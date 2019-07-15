@@ -44,7 +44,7 @@ sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungi
 ```
 or from dochub
 ```
-curl http://dochub.fungible.local/doc/sw/tools/fungible.com-certs/fungible.com.crt > /usr/local/share/ca-certificates/fungible.com.crt
+curl http://dochub.fungible.local/doc/sw/tools/fungible.com-certs/fungible.com.crt | sudo tee /usr/local/share/ca-certificates/fungible.com.crt
 ```
 and then
 ```
