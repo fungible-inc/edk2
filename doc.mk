@@ -10,6 +10,7 @@ images += run_cclinux
 images += integ_test
 images += run_sc
 images += bld_sc
+images += bld_bcm
 
 all: $(images)
 
@@ -59,6 +60,10 @@ bld_sc: Dockerfile.bld_sc
 $(arg_user)/bld_sc: bld_sc
 
 $(arg_user)/bld_sc: Dockerfile.bld_sc.usr
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_bcm
+bld_bcm: Dockerfile.bld_bcm
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # dind
