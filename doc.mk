@@ -11,6 +11,7 @@ images += integ_test
 images += run_sc
 images += bld_sc
 images += bld_bcm
+images += bld_fpga
 
 all: $(images)
 
@@ -60,6 +61,10 @@ bld_sc: Dockerfile.bld_sc
 $(arg_user)/bld_sc: bld_sc
 
 $(arg_user)/bld_sc: Dockerfile.bld_sc.usr
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_fpga
+bld_fpga: Dockerfile.bld_fpga
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_bcm
