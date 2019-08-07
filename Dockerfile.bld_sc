@@ -17,17 +17,23 @@ RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar z
 	cd /librdkafka-1.0.0 && \
 	./configure && \
 	make && \
-	make install  && \
+	make install && \
 	rm -rf /librdkafka-1.0.0
 RUN curl -s https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
-RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
-	unzip protoc-3.7.0-linux-x86_64.zip -d /usr/local && \
+
+# Protobuf developers have screwed up their releasing process! nobody has read permission except user who installs it!
+RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \
+	mkdir /tmp/foo && unzip protoc-3.7.0-linux-x86_64.zip -d /tmp/foo && chmod -R a+rx /tmp/foo && \
+	cd /tmp/foo && cp -r bin include /usr/local
+
+RUN cd /usr/local && \
 	/usr/local/go/bin/go get -d -u github.com/golang/protobuf/protoc-gen-go && \
 	/usr/local/go/bin/go install github.com/golang/protobuf/protoc-gen-go
 
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
-        cd cpp_redis && \
-        git submodule init && git submodule update && \
-        mkdir build && cd build && \
-        cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && \
-        cd ../.. && rm -rf cpp_redis
+	cd cpp_redis && \
+	git submodule init && git submodule update && \
+	mkdir build && cd build && \
+	cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && \
+	cd ../.. && rm -rf cpp_redis
+
