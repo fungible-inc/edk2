@@ -63,7 +63,7 @@ sudo usermod -aG docker your_userid
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
 ```
-$> docker run -t --rm --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos make MACHINE=f1
+$> docker run -t --rm -u $USER --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos make MACHINE=f1
 ```
 
 You could write a wrapper script with all your personal customization to suit your needs. For example:
