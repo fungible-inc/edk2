@@ -13,22 +13,25 @@ RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.ta
 	make && \
 	make install && \
 	rm -rf /thrift-0.12.0
+
 RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar zxv && \
 	cd /librdkafka-1.0.0 && \
 	./configure && \
 	make && \
 	make install && \
 	rm -rf /librdkafka-1.0.0
+
 RUN curl -s https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
 
-# Protobuf developers have screwed up their releasing process! nobody has read permission except user who installs it!
-RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \
+# Protobuf? are they stupid or what? nobody else has read permission except user who installs it! 
+RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
 	mkdir /tmp/foo && unzip protoc-3.7.0-linux-x86_64.zip -d /tmp/foo && chmod -R a+rx /tmp/foo && \
-	cd /tmp/foo && cp -r bin include /usr/local
+	cd /tmp/foo && cp -r bin include /usr/local && /bin/rm -rf /tmp/foo
 
-RUN cd /usr/local && \
-	/usr/local/go/bin/go get -d -u github.com/golang/protobuf/protoc-gen-go && \
-	/usr/local/go/bin/go install github.com/golang/protobuf/protoc-gen-go
+# Egoistic go! Messed up, no easy way to install for site-wide use, only per user! install relies on umask!
+# note GOPATH does not persit across layers.
+ENV GOPATH /home/go
+RUN /usr/local/go/bin/go get -u github.com/golang/protobuf/protoc-gen-go && find /home/go -type d | xargs chmod a+rwx
 
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
 	cd cpp_redis && \
@@ -36,4 +39,3 @@ RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git &
 	mkdir build && cd build && \
 	cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && \
 	cd ../.. && rm -rf cpp_redis
-
