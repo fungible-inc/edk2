@@ -40,9 +40,19 @@ prepare_ws () {
 
 	# Adjust Dockerfile timestamp
 	# reset file timestamp to last commit time if unmodifed git file 
-	git ls-files --error-unmatch $DOC_FILE > /dev/null 2>&1
+	# New dockerfile?
+	git ls-files -o --error-unmatch $DOC_FILE > /dev/null 2>&1
 	if [[ $? -eq 0 ]]
 	then
+		echo "New dockerfile $DOC_FILE"
+		return 0
+	fi
+	# Modified git tracked file?
+	git ls-files -m --error-unmatch $DOC_FILE > /dev/null 2>&1
+	if [[ $? -eq 0 ]]
+	then
+		echo "modified git tracked file"
+	else
 		echo "unmodified git tracked file"
 		touch $DOC_FILE --date=@$(git log -n1 --pretty=format:%ct $DOC_FILE)
 		return 0
