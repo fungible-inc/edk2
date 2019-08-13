@@ -21,4 +21,4 @@ RUN echo "deb http://www.apache.org/dist/cassandra/debian 36x main" | tee -a /et
 
 RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
 RUN pip install --upgrade-strategy only-if-needed flask flask-cors kafka-python redis enum34 requests cassandra-driver \
-	grpc grpcio grpcio-tools thrift==0.11.0 elasticsearch
+	grpc grpcio grpcio-tools thrift==0.11.0 elasticsearch passlib flask_httpauth
