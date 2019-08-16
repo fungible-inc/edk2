@@ -3,7 +3,7 @@ FROM ${DOC_REG}/run_funos:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	iproute2 redis-server python-pip python-thrift sudo libconfig9 libnl-3-200 libnl-route-3-200 \
-	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping
+	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping libxslt1.1
 
 RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
 RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
@@ -41,12 +41,27 @@ RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar
 ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
 ARG REDISCONF_LOCAL_DIR=/etc/redis/
 ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
-RUN chmod a+rwx /etc/redis/redis.conf; touch /var/log/redis.log; chmod a+rwx /var/log/redis.log; chmod a+rwx /var/lib/redis/;  mkdir -p /var/lib/redis/6379; chmod a+rwx /var/lib/redis/6379
+RUN chmod a+rwx /etc/redis/redis.conf && touch /var/log/redis.log && chmod a+rwx /var/log/redis.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6379 && chmod a+rwx /var/lib/redis/6379
+	
+# Copy over OpenR needed packages.
+
+ARG OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/sandbox/frr/
+ARG OPENR_SYS_LIBS_TAR=openr_system_missing_qemu.tar
+RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/local/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
+
+ARG OPENR_NEEDED_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/openr/latest/
+ARG OPENR_TAR=openr.tar
+RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/local/lib && rm $OPENR_TAR && rm -rf openr/
+
+ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
+RUN cd /etc/dhcp && wget $DHCLIENT 
+
+#RUN  pip install --upgrade pip Flask==0.10.1 thrift==0.11
 
 # set the enviroment for the build
-WORKDIR /home/fcpusr
+#WORKDIR /home/fcpusr
 # some test script expets $USER to be set
-ENV USER fcpusr
-USER fcpusr
+#ENV USER fcpusr
+#USER fcpusr
 CMD ["/bin/bash"]
 
