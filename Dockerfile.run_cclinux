@@ -36,7 +36,7 @@ RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environm
 
 # temp, need to take it from multi-stage docker for JSONC libjson-c.4, redis.conf, zmq
 COPY cclinux.tar /tmp
-RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar
+RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar && mkdir -p /var/lib/lldpad
 
 ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
 ARG REDISCONF_LOCAL_DIR=/etc/redis/
