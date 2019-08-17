@@ -12,6 +12,7 @@ images += run_sc
 images += bld_sc
 images += bld_bcm
 images += bld_fpga
+images += bld_hd
 
 all: $(images)
 
@@ -69,6 +70,10 @@ bld_fpga: Dockerfile.bld_fpga
 
 # bld_bcm
 bld_bcm: Dockerfile.bld_bcm
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_hd
+bld_hd: Dockerfile.bld_hd
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # dind

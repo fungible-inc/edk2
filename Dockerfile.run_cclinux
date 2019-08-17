@@ -58,6 +58,8 @@ RUN cd /etc/dhcp && wget $DHCLIENT
 
 #RUN  pip install --upgrade pip Flask==0.10.1 thrift==0.11
 
+RUN apt-get clean
+
 # set the enviroment for the build
 #WORKDIR /home/fcpusr
 # some test script expets $USER to be set
