@@ -3,11 +3,13 @@ FROM ${DOC_REG}/run_funos:latest
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	iproute2 redis-server python-pip python-thrift sudo libconfig9 libnl-3-200 libnl-route-3-200 \
-	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping libxslt1.1
+	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping libxslt1.1 \
+	ethtool tcpdump vim
 
 RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
 RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
 RUN pip install --upgrade-strategy only-if-needed thrift==0.11.0
+RUN pip install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch click hexdump tabulate futures ipaddress typing future
 
 # FRR login
 RUN groupadd -g 92 frr && groupadd -r -g 85 frrvty && \
@@ -54,7 +56,7 @@ ARG OPENR_TAR=openr.tar
 RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/local/lib && rm $OPENR_TAR && rm -rf openr/
 
 ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
-RUN cd /etc/dhcp && wget $DHCLIENT 
+RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT 
 
 #RUN  pip install --upgrade pip Flask==0.10.1 thrift==0.11
 
