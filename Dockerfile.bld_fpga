@@ -9,6 +9,7 @@ RUN apt-get update && \
 	diffstat help2man make gcc build-essential g++ desktop-file-utils chrpath libgl1-mesa-dev \
 	libglu1-mesa-dev autoconf automake groff libtool xterm lib32z1 cpio help2man bc
 
+RUN pip install haslib
 # env needed for angstrom build.
 RUN locale-gen en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
