@@ -6,9 +6,8 @@ RUN apt-get update && \
 	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping libxslt1.1 \
 	ethtool tcpdump vim
 
-RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
+RUN pip install --upgrade-strategy only-if-needed setuptools wheel pipenv
 RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
-RUN pip install --upgrade-strategy only-if-needed thrift==0.11.0
 RUN pip install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch click hexdump tabulate futures ipaddress typing future
 
 # FRR login
@@ -49,16 +48,32 @@ RUN chmod a+rwx /etc/redis/redis.conf && touch /var/log/redis.log && chmod a+rwx
 
 ARG OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/sandbox/frr/
 ARG OPENR_SYS_LIBS_TAR=openr_system_missing_qemu.tar
-RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/local/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
+RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
 
 ARG OPENR_NEEDED_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/openr/latest/
 ARG OPENR_TAR=openr.tar
-RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/local/lib && rm $OPENR_TAR && rm -rf openr/
+RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/lib && rm $OPENR_TAR && rm -rf openr/
 
 ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
 RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT 
 
-#RUN  pip install --upgrade pip Flask==0.10.1 thrift==0.11
+#
+# Set up OpenR breeze
+#
+ARG OPENR_BREEZE_TAR=openr_breeze.tar 
+RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OPENR_BREEZE_TAR && \
+    cp  /tmp/openr/build/srcs/fbthrift/build/bin/thrift1 /usr/local/bin && \
+    cd /tmp/openr/build/srcs/fbzmq/fbzmq/py && python setup.py install && \
+    cd /tmp/openr/build/srcs/fbthrift/thrift/lib/py && python setup.py install && \
+    cd /tmp/openr/openr/py && python setup.py build && python setup.py install && \
+    cd /tmp && rm -rf openr/
+
+#
+# Set up pipenv for storage agent
+#
+RUN mkdir -p /var/opt/storage_agent 
+COPY storage_agent_reqs.txt /var/opt/storage_agent
+RUN cd /var/opt/storage_agent && pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
 
 RUN apt-get clean
 
