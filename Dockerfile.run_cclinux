@@ -72,7 +72,6 @@ RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OP
 # Set up pipenv for storage agent
 #
 RUN mkdir -p /var/opt/storage_agent 
-COPY storage_agent_reqs.txt /var/opt/storage_agent
 RUN cd /var/opt/storage_agent && pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
 
 RUN apt-get clean
