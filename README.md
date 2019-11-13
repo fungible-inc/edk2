@@ -36,14 +36,6 @@ $> docker run [options] docker.fungible.com/bld_funos [build commands]
 You may need to update certificate store on your machine to pull images via SSL from private registry. To do so:
 
 ```
-sudo cp ~admin/SSL-Wildcard_Cert/fungible.com.crt /usr/local/share/ca-certificates/
-```
-or use your ldap credentials to scp from an VNC server
-```
-sudo scp yourself@vncserver:/project/users/doc/sw/tools/fungible.com-certs/fungible.com.crt /usr/local/share/ca-certificates
-```
-or from dochub
-```
 curl http://dochub.fungible.local/doc/sw/tools/fungible.com-certs/fungible.com.crt | sudo tee /usr/local/share/ca-certificates/fungible.com.crt
 ```
 and then
@@ -59,14 +51,15 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-compose
 sudo usermod -aG docker your_userid
 ```
-
+#### Note: Example of building funos-f1 using docker image:
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
 ```
 $> docker run -t --rm -u $USER --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos make MACHINE=f1
 ```
 
-You could write a wrapper script with all your personal customization to suit your needs. For example:
+#### Advanced usage:
+You could write a wrapper script with all your personal customization to suit your needs. For example to customize docker image with some new packages you can create a branch in FunDocker, modify dockerfile, build an image and use that to build funos-f1:
 
 With a simple doc_run bash script shown below, one can execute doc_run make MACHINE=posix or doc_run FunOS/scripts/build_test.sh mips-f1
 
