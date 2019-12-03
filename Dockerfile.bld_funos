@@ -45,3 +45,7 @@ ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 
 # accel-regex
 RUN pip install nose
+
+# dpcsh on BMC (arm)
+RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+	gcc-arm-linux-gnueabi
