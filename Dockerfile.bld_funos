@@ -48,4 +48,4 @@ RUN pip install nose
 
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	gcc-arm-linux-gnueabi
+	gcc-arm-linux-gnueabi libc6-dev-armel-cross
