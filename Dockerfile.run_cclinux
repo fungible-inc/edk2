@@ -39,10 +39,20 @@ RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environm
 COPY cclinux.tar /tmp
 RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar && mkdir -p /var/lib/lldpad
 
-ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
+ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis_6379.conf
 ARG REDISCONF_LOCAL_DIR=/etc/redis/
 ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
-RUN chmod a+rwx /etc/redis/redis.conf && touch /var/log/redis.log && chmod a+rwx /var/log/redis.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6379 && chmod a+rwx /var/lib/redis/6379
+RUN chmod a+rwx /etc/redis/redis_6379.conf && touch /var/log/redis_6379.log && chmod a+rwx /var/log/redis_6379.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6379 && chmod a+rwx /var/lib/redis/6379
+	
+ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis_6380.conf
+ARG REDISCONF_LOCAL_DIR=/etc/redis/
+ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
+RUN chmod a+rwx /etc/redis/redis_6380.conf && touch /var/log/redis_6380.log && chmod a+rwx /var/log/redis_6380.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6380 && chmod a+rwx /var/lib/redis/6380
+	
+ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis_6381.conf
+ARG REDISCONF_LOCAL_DIR=/etc/redis/
+ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
+RUN chmod a+rwx /etc/redis/redis_6381.conf && touch /var/log/redis_6381.log && chmod a+rwx /var/log/redis_6381.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6381 && chmod a+rwx /var/lib/redis/6381
 	
 # Copy over OpenR needed packages.
 
