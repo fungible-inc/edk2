@@ -13,6 +13,7 @@ images += bld_sc
 images += bld_bcm
 images += bld_fpga
 images += bld_hd
+images += bld_golang
 
 all: $(images)
 
@@ -74,6 +75,10 @@ bld_bcm: Dockerfile.bld_bcm
 
 # bld_hd
 bld_hd: Dockerfile.bld_hd
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_golang
+bld_golang: Dockerfile.bld_golang
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # dind
