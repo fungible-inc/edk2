@@ -49,7 +49,7 @@ RUN pip install nose
 #golang
 ARG GO_VER=go1.13.4
 ARG GO_DOWNLOAD_LOC=https://dl.google.com/go/$GO_VER.linux-amd64.tar.gz
-ARG GO_LOCAL_DIR=/usr/lib/
+ARG GO_LOCAL_DIR=/usr/lib
 ARG GO_LOCAL=/usr/lib/$GO_VER.linux-amd64.tar.gz
 
 # Install golang package to docker
@@ -65,3 +65,6 @@ RUN apt-get install --no-install-recommends --no-install-suggests -y \
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	gcc-arm-linux-gnueabi libc6-dev-armel-cross
+
+# all apt-get commands should be above this
+RUN apt-get clean
