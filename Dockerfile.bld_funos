@@ -46,6 +46,22 @@ ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 # accel-regex
 RUN pip install nose
 
+#golang
+ARG GO_VER=go1.13.4
+ARG GO_DOWNLOAD_LOC=https://dl.google.com/go/$GO_VER.linux-amd64.tar.gz
+ARG GO_LOCAL_DIR=/usr/lib/
+ARG GO_LOCAL=/usr/lib/$GO_VER.linux-amd64.tar.gz
+
+# Install golang package to docker
+ADD $GO_DOWNLOAD_LOC $GO_LOCAL_DIR
+RUN cd $GO_LOCAL_DIR; tar xvf $GO_LOCAL; rm $GO_LOCAL
+ENV PATH "${PATH}:${GO_LOCAL_DIR}/go/bin"
+
+# Ydk-gen build requirements
+RUN apt-get install --no-install-recommends --no-install-suggests -y \
+	libxml2-dev doxygen graphviz libssh-dev libcurl4-openssl-dev libxslt-dev libtool-bin \
+	libpcre3-dev libxslt1-dev python3-dev python-dev devscripts debhelper
+
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	gcc-arm-linux-gnueabi libc6-dev-armel-cross
