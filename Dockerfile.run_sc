@@ -14,7 +14,7 @@ RUN curl -s http://mirror.csclub.uwaterloo.ca/apache/kafka/2.1.1/kafka_2.12-2.1.
 	mv kafka_2.12-2.1.1 kafka && \
 	sed -i 's/group.initial.rebalance.delay.ms=0/group.initial.rebalance.delay.ms=3000/' /kafka/config/server.properties
 
-RUN echo "deb http://www.apache.org/dist/cassandra/debian 36x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+RUN echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
 	curl https://www.apache.org/dist/cassandra/KEYS | apt-key add - && \
 	apt-get update && \
 	DEBIAN_FRONTEN=noninteractive apt-get install -y --no-install-recommends cassandra
