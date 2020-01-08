@@ -7,7 +7,7 @@ RUN apt-get update && \
 	pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
 	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
-	pandoc
+	pandoc bison flex
 
 RUN pip install PyYAML jinja2 ply
 
