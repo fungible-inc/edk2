@@ -14,6 +14,7 @@ images += bld_bcm
 images += bld_fpga
 images += bld_hd
 images += bld_golang
+images += $(arg_user)/bld_fun_on_demand
 
 all: $(images)
 
@@ -79,6 +80,10 @@ bld_hd: Dockerfile.bld_hd
 
 # bld_golang
 bld_golang: Dockerfile.bld_golang
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# Fun-on-demand build and test.
+$(arg_user)/bld_fun_on_demand: Dockerfile.bld_fun_on_demand.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # dind

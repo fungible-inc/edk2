@@ -1,0 +1,26 @@
+# Docker image for running Fun-on-demand tests (or even Fun-on-demand.)
+#
+# Build with
+# docker build . -t bowdidge/fun_on_demand --build-arg arg_user=`id -un` --build-arg arg_uid=`id -u`
+#
+# Run with
+# docker run -v /Users/bowdidge/Code/PalladiumOnDemand:/PalladiumOnDemand -t bowdidge/fun_on_demand /PalladiumOnDemand/run_all_tests_docker.sh
+
+# Fixed version just to ensure changes happen when expected.
+FROM ubuntu:bionic-20190307
+
+ARG arg_user
+ARG arg_uid
+
+RUN apt-get update && apt-get install --yes python-pip git wget ssh
+
+RUN pip install jinja2 netifaces virtualenv pbr mock
+
+RUN ssh-keygen -A && \
+    mkdir -p /var/run/sshd && \
+    /bin/rm -f /var/log/lastlog /var/log/faillog && \
+    useradd -l -m -u $arg_uid -s /bin/sh $arg_user
+
+WORKDIR /home/$arg_user
+USER $arg_user
+CMD ["/bin/bash"]
