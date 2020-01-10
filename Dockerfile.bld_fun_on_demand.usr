@@ -12,7 +12,7 @@ FROM ubuntu:bionic-20190307
 ARG arg_user
 ARG arg_uid
 
-RUN apt-get update && apt-get install --yes python-pip git wget ssh curl
+RUN apt-get update && apt-get install --yes python-pip git wget ssh
 
 RUN pip install jinja2 netifaces virtualenv pbr mock
 
