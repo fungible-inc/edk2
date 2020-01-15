@@ -11,7 +11,7 @@ RUN	pip install pexpect jinja2 sqlalchemy pandas
 RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
 	apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
+	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-compose
 
 ENV DOCKER_COMPOSE_VERSION 1.25.0
 
