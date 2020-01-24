@@ -1,0 +1,16 @@
+# Docker image for running a simulated FS1600 inside a VM.
+#
+# Used for testing StorageController.  Requires dependencies for running
+# funos-posix, Storage Agent, and Node Manager.
+#
+# FunOS and StorageController bits to run should be mapped into the Docker
+# instance.
+
+FROM docker.fungible.com/run_funos:latest
+
+RUN apt-get update && apt-get install -y python-pip python-dev redis-server net-tools wget
+RUN pip install requests flask==0.10.1 redis thrift requests
+
+# Create the container with a dummy command which will be overridden by the launch script
+CMD "tail -f /dev/null"
+
