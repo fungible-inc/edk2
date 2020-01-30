@@ -43,7 +43,8 @@ and then
 sudo update-ca-certificates -v -f 
 sudo /sbin/shutdown -r now
 ```
-#### Note: Docker installation instruction:
+#### Note: Docker installation instructions on Ubuntu:
+Use these instructions for installations on Ubuntu 18.04.  Don't use the snap installer suggested by Ubuntu - it installs the Enterprise/paid edition which is different from the Community version.
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
