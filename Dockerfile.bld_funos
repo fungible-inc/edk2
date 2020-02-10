@@ -9,7 +9,7 @@ RUN apt-get update && \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
 	pandoc bison flex
 
-RUN pip install PyYAML jinja2 ply
+RUN pip install PyYAML jinja2 ply pandas
 
 # mips gcc
 RUN mkdir /opt/cross && \
