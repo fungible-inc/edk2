@@ -43,7 +43,8 @@ and then
 sudo update-ca-certificates -v -f 
 sudo /sbin/shutdown -r now
 ```
-#### Note: Docker installation instruction:
+#### Note: Docker installation instructions on Ubuntu:
+Use these instructions for installations on Ubuntu 18.04.  Don't use the snap installer suggested by Ubuntu - it installs the Enterprise/paid edition which is different from the Community version.
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
@@ -55,7 +56,7 @@ sudo usermod -aG docker your_userid
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
 
 ```
-$> docker run -t --rm -u $USER --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos make MACHINE=f1
+$> docker run -t --rm -u $USER --cap-add SYS_PTRACE -v $PWD:$PWD -w $PWD $USER/bld_funos bash -c "cd FunOS && make MACHINE=f1"
 ```
 
 #### Advanced usage:

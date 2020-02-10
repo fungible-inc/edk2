@@ -11,7 +11,14 @@ RUN	pip install pexpect jinja2 sqlalchemy pandas
 RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
 	apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
+	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-compose
+
+ENV DOCKER_COMPOSE_VERSION 1.25.0
+
+# debian docker-compose is too old, 1.17. May need to replace following when reving base image with apt-get install
+RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" \
+	-o /usr/local/bin/docker-compose \
+	&& chmod +x /usr/local/bin/docker-compose
 
 # There are no defaults for adduser, so one must pass them at build time as
 # docker build -t user/funos_build --build-arg arg_user=$(id -un) --build-arg arg_uid=$(id -u) .
