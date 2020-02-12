@@ -1,0 +1,9 @@
+# Dockerfile References: https://docs.docker.com/engine/reference/builder/
+# https://www.callicoder.com/docker-golang-image-container-example/
+
+# Start from barebones base image
+FROM alpine:3.11
+RUN apk --no-cache add ca-certificates
+RUN apk add --no-cache bash
+
+WORKDIR /workspace
