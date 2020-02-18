@@ -10,6 +10,7 @@ images += run_cclinux
 images += integ_test
 images += run_sc
 images += bld_sc
+images += $(arg_user)/bld_sc
 images += bld_bcm
 images += bld_fpga
 images += bld_hd
