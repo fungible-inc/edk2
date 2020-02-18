@@ -31,6 +31,7 @@ RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar z
 	rm -rf /librdkafka-1.0.0
 
 RUN curl -s https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
+ENV PATH "${PATH}:/usr/local/go/bin"
 
 # Protobuf? are they stupid or what? nobody else has read permission except user who installs it! 
 RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
