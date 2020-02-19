@@ -10,10 +10,13 @@ images += run_cclinux
 images += integ_test
 images += run_sc
 images += bld_sc
+images += $(arg_user)/bld_sc
 images += bld_bcm
 images += bld_fpga
 images += bld_hd
 images += bld_golang
+images += bld_apigateway
+images += run_apigateway
 images += $(arg_user)/bld_fun_on_demand
 
 all: $(images)
@@ -94,3 +97,10 @@ $(arg_user)/dind: Dockerfile.dind.usr
 integ_test: Dockerfile.integ_test
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
+# bld_apigateway
+bld_apigateway: Dockerfile.bld_apigateway
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# run_apigateway
+run_apigateway: Dockerfile.run_apigateway
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<

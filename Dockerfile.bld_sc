@@ -9,6 +9,11 @@ RUN apt-get update && \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
 	automake libboost-all-dev libssl1.0-dev byacc nodejs cmake
 
+RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+	apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
+
 # Storage Controller build dependencies
 RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.tar.gz | tar xvz -C / && \
 	cd /thrift-0.12.0 && \
@@ -26,6 +31,7 @@ RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar z
 	rm -rf /librdkafka-1.0.0
 
 RUN curl -s https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
+ENV PATH "${PATH}:/usr/local/go/bin"
 
 # Protobuf? are they stupid or what? nobody else has read permission except user who installs it! 
 RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
