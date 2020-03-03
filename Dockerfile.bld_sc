@@ -14,6 +14,13 @@ RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
+ENV DOCKER_COMPOSE_VERSION 1.25.0
+
+# debian docker-compose is too old, 1.17. May need to replace following when reving base image with apt-get install
+RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" \
+	-o /usr/bin/docker-compose \
+	&& chmod +x /usr/bin/docker-compose
+
 # Storage Controller build dependencies
 RUN curl -s http://mirrors.estointernet.in/apache/thrift/0.12.0/thrift-0.12.0.tar.gz | tar xvz -C / && \
 	cd /thrift-0.12.0 && \
