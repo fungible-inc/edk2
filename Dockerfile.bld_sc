@@ -45,11 +45,6 @@ RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/pr
 	mkdir /tmp/foo && unzip protoc-3.7.0-linux-x86_64.zip -d /tmp/foo && chmod -R a+rx /tmp/foo && \
 	cd /tmp/foo && cp -r bin include /usr/local && /bin/rm -rf /tmp/foo
 
-# Egoistic go! Messed up, no easy way to install for site-wide use, only per user! install relies on umask!
-# note GOPATH does not persit across layers.
-ENV GOPATH /home/go
-RUN /usr/local/go/bin/go get -u github.com/golang/protobuf/protoc-gen-go && find /home/go -type d | xargs chmod a+rwx
-
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
 	cd cpp_redis && \
 	git submodule init && git submodule update && \
