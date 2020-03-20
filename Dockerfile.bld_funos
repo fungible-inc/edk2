@@ -66,5 +66,11 @@ RUN apt-get install --no-install-recommends --no-install-suggests -y \
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	gcc-arm-linux-gnueabi libc6-dev-armel-cross
 
+# docker
+RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+	apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce 
+
 # all apt-get commands should be above this
 RUN apt-get clean

@@ -14,6 +14,7 @@ ARG arg_uid
 
 RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 	useradd -l -m -u $arg_uid -s /bin/sh $arg_user && \
+	usermod -aG docker $arg_user 
 	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
 
 # set the enviroment for the build
