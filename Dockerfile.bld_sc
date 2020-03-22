@@ -9,6 +9,9 @@ RUN apt-get update && \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
 	automake libboost-all-dev libssl1.0-dev byacc nodejs cmake
 
+# Getting swagger codegen to generate client side code for GUI 
+RUN wget https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/2.4.12/swagger-codegen-cli-2.4.12.jar
+
 RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
 	apt-get update && \
