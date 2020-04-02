@@ -4,9 +4,9 @@ RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	iproute2 redis-server python-pip python-thrift sudo libconfig9 libnl-3-200 libnl-route-3-200 \
 	libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client iputils-ping libxslt1.1 \
-	ethtool tcpdump vim
+	ethtool tcpdump vim python-setuptools
 
-RUN pip install --upgrade-strategy only-if-needed setuptools wheel pipenv
+RUN pip install --upgrade wheel pipenv
 RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
 RUN pip install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch click hexdump tabulate futures ipaddress typing future
 
@@ -36,7 +36,7 @@ RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environm
 #RUN mkdir /var/run/sshd
 
 # temp, need to take it from multi-stage docker for JSONC libjson-c.4, redis.conf, zmq
-COPY cclinux.tar /tmp
+ADD http://dochub.fungible.local/doc/sw/tools/cclinux.tar /tmp
 RUN tar xf /tmp/cclinux.tar && rm -f /tmp/cclinux.tar && mkdir -p /var/lib/lldpad
 
 ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
@@ -46,13 +46,13 @@ RUN chmod a+rwx /etc/redis/redis.conf && touch /var/log/redis.log && chmod a+rwx
 	
 # Copy over OpenR needed packages.
 
-ARG OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/sandbox/frr/
-ARG OPENR_SYS_LIBS_TAR=openr_system_missing_qemu.tar
-RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
+#ARG OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/sandbox/frr/
+#ARG OPENR_SYS_LIBS_TAR=openr_system_missing_qemu.tar
+#RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
 
-ARG OPENR_NEEDED_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/openr/latest/
-ARG OPENR_TAR=openr.tar
-RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/lib && rm $OPENR_TAR && rm -rf openr/
+#ARG OPENR_NEEDED_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/openr/latest/
+#ARG OPENR_TAR=openr.tar
+#RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/lib && rm $OPENR_TAR && rm -rf openr/
 
 ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
 RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT 
@@ -60,13 +60,13 @@ RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT
 #
 # Set up OpenR breeze
 #
-ARG OPENR_BREEZE_TAR=openr_breeze.tar 
-RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OPENR_BREEZE_TAR && \
-    cp  /tmp/openr/build/srcs/fbthrift/build/bin/thrift1 /usr/local/bin && \
-    cd /tmp/openr/build/srcs/fbzmq/fbzmq/py && python setup.py install && \
-    cd /tmp/openr/build/srcs/fbthrift/thrift/lib/py && python setup.py install && \
-    cd /tmp/openr/openr/py && python setup.py build && python setup.py install && \
-    cd /tmp && rm -rf openr/
+#ARG OPENR_BREEZE_TAR=openr_breeze.tar 
+#RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OPENR_BREEZE_TAR && \
+#    cp  /tmp/openr/build/srcs/fbthrift/build/bin/thrift1 /usr/local/bin && \
+#    cd /tmp/openr/build/srcs/fbzmq/fbzmq/py && python setup.py install && \
+#    cd /tmp/openr/build/srcs/fbthrift/thrift/lib/py && python setup.py install && \
+#    cd /tmp/openr/openr/py && python setup.py build && python setup.py install && \
+#    cd /tmp && rm -rf openr/
 
 #
 # Set up pipenv for storage agent
@@ -74,6 +74,19 @@ RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OP
 RUN mkdir -p /var/opt/storage_agent 
 RUN cd /var/opt/storage_agent && pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
 
+#
+# snapshot, dpc_cli
+#
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+	python2.7-dev
+
+RUN pip install --upgrade-strategy only-if-needed netaddr bitstring ctypesgen prettytable cmd2==0.8.5
+
+ADD http://dochub.fungible.local/doc/jenkins/sandbox/frr/dpc_snapshot.tar /tmp
+RUN cd /tmp && tar xf dpc_snapshot.tar && rm -f /tmp/dpc_snapshot.tar &&\
+    cd /tmp/dpcsh && python setup.py install  &&\
+    cd /tmp/dpcsh_interactive_client  && python setup.py install
 RUN apt-get clean
 
 # set the enviroment for the build
