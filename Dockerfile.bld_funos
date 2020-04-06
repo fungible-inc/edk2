@@ -68,7 +68,7 @@ RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --
 	gcc-arm-linux-gnueabi libc6-dev-armel-cross
 
 # Libfunq requirements
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libcap-dev libreadline-dev
 
 # all apt-get commands should be above this
 RUN apt-get clean
