@@ -2,7 +2,6 @@
 FUNDOCKER = ./fun_docker.sh
 
 images = run_funos 
-images += yocto
 images += $(arg_user)/run_funos 
 images += bld_funos 
 images += $(arg_user)/bld_funos
@@ -28,15 +27,6 @@ clean:
 
 # run_funos
 run_funos: Dockerfile.run_funos
-	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
-
-$(arg_user)/run_funos: run_funos
-
-$(arg_user)/run_funos: Dockerfile.run_funos.usr
-	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
-
-# yocto
-yocto: Dockerfile.yocto
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 $(arg_user)/run_funos: run_funos

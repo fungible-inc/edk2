@@ -18,17 +18,18 @@ RUN mkdir /opt/cross && \
 	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
 	tar xfz - -C /opt/cross
 
+## Comment out yocto until it 3.0 stabilizes
 # yocto
-ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/latest
-ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64-core2-64-toolchain-2.3.1.sh
-ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6-mipsisa64r6-toolchain-2.3.1.sh
+#ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/latest
+#ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64-core2-64-toolchain-2.3.1.sh
+#ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6-mipsisa64r6-toolchain-2.3.1.sh
 
-RUN wget -q ${yocto}/x86_64/${poky_x86} && \
-	wget -q ${yocto}/mips64/${poky_mips} && \
-	chmod 755 ${poky_x86} ${poky_mips} && \
-	./${poky_x86} && \
-	./${poky_mips} && \
-	rm -f ${poky_x86} ${poky_mips}
+#RUN wget -q ${yocto}/x86_64/${poky_x86} && \
+#	wget -q ${yocto}/mips64/${poky_mips} && \
+#	chmod 755 ${poky_x86} ${poky_mips} && \
+#	./${poky_x86} && \
+#	./${poky_mips} && \
+#	rm -f ${poky_x86} ${poky_mips}
 
 # u-boot
 RUN apt-get update; apt-get install -y gcc-mips64-linux-gnuabi64
@@ -65,6 +66,9 @@ RUN apt-get install --no-install-recommends --no-install-suggests -y \
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	gcc-arm-linux-gnueabi libc6-dev-armel-cross
+
+# Libfunq requirements
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev
 
 # all apt-get commands should be above this
 RUN apt-get clean
