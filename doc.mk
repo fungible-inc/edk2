@@ -12,6 +12,7 @@ images += bld_bcm
 images += bld_fpga
 images += bld_hd
 images += bld_golang
+images += bld_gccgo
 images += bld_apigateway
 images += run_apigateway
 images += $(arg_user)/bld_fun_on_demand
@@ -78,6 +79,10 @@ bld_hd: Dockerfile.bld_hd
 
 # bld_golang
 bld_golang: Dockerfile.bld_golang
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_gccgo
+bld_gccgo: Dockerfile.bld_gccgo
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # Fun-on-demand build and test.

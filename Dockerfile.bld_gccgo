@@ -1,0 +1,18 @@
+FROM ubuntu:20.04
+
+WORKDIR /src
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get --allow-yes=true -yy install --no-install-recommends --no-install-suggests \
+    ca-certificates \
+    curl \
+    build-essential \
+    gccgo-10-multilib-mipsisa64r6-linux-gnuabi64 \
+    git \
+    && apt-get clean
+
+ENV GO_VER=1.14.1
+RUN mkdir -p /opt && cd /opt \
+    && curl https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz | tar vzxf - \
+    && ln -sf $(pwd)/go/bin/* /usr/bin
