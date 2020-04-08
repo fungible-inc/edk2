@@ -55,6 +55,11 @@ RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git &
 	cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && \
 	cd ../.. && rm -rf cpp_redis
 
+# for helm
+RUN curl -sL https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz |  tar zx && \
+	mv linux-amd64/helm /usr/local/bin/helm && \
+	/bin/rm -rf linux-amd64
+
 # yocto 3.0.2
 ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/latest
 ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh

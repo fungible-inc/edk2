@@ -8,9 +8,6 @@ images += $(arg_user)/bld_funos
 images += $(arg_user)/dind
 images += run_cclinux
 images += integ_test
-images += run_sc
-images += bld_sc
-images += $(arg_user)/bld_sc
 images += bld_bcm
 images += bld_fpga
 images += bld_hd
@@ -18,6 +15,9 @@ images += bld_golang
 images += bld_apigateway
 images += run_apigateway
 images += $(arg_user)/bld_fun_on_demand
+images += run_sc
+images += bld_sc
+images += $(arg_user)/bld_sc
 
 all: $(images)
 

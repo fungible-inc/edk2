@@ -33,6 +33,11 @@ RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 	usermod -aG docker $arg_user && \
 	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
 
+# for helm
+RUN curl -sL https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz |  tar zx && \
+	mv linux-amd64/helm /usr/local/bin/helm && \
+	/bin/rm -rf linux-amd64
+
 # just added jenkins to docker group, need a new login session.
 ENV USER $arg_user
 USER $arg_user
