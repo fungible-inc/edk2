@@ -7,7 +7,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y python zip git protobuf-compiler python-openssl \
 	libgnutls-openssl27 python-backports.ssl-match-hostname bison flex wget libtool libpq-dev \
-	automake libboost-all-dev libssl1.0-dev byacc nodejs cmake
+	automake libboost-all-dev libssl1.0-dev byacc nodejs cmake sudo
 
 # Getting swagger codegen to generate client side code for GUI 
 RUN wget https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/2.4.12/swagger-codegen-cli-2.4.12.jar
