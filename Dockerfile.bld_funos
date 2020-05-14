@@ -31,7 +31,7 @@ ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolcha
 ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-3.0.2.sh
 
 RUN wget -q ${yocto}/x86_64/${poky_x86} && \
-	wget -q ${yocto}/mips64/${poky_mips} && \
+	wget -q ${yocto}/mips64hv/${poky_mips} && \
 	chmod 755 ${poky_x86} ${poky_mips} && \
 	./${poky_x86} -y && \
 	./${poky_mips} -y && \
