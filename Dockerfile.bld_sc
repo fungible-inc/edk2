@@ -60,14 +60,17 @@ RUN curl -sL https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz |  tar zx && \
 	mv linux-amd64/helm /usr/local/bin/helm && \
 	/bin/rm -rf linux-amd64
 
-## Comment out yocto until it 3.0 stabilizes
-# yocto 3.0.2
-#ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/latest
-#ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh
-#ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6-mipsisa64r6-qemumips64r6-toolchain-3.0.2.sh
-#RUN wget -q ${yocto}/x86_64/${poky_x86} && \
-#        wget -q ${yocto}/mips64/${poky_mips} && \
-#        chmod 755 ${poky_x86} ${poky_mips} && \
-#        ./${poky_x86} && \
-#        ./${poky_mips} && \
-#        rm -f ${poky_x86} ${poky_mips}
+# yocto
+# hardcoded to master dev-line as yocto will probably never branch
+ARG YOCTO_BLD=814
+ARG yocto=http://dochub.fungible.local/doc/jenkins/cc-linux-yocto/master/$YOCTO_BLD
+ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh
+ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-3.0.2.sh
+
+RUN wget -q ${yocto}/x86_64/${poky_x86} && \
+	wget -q ${yocto}/mips64/${poky_mips} && \
+	chmod 755 ${poky_x86} ${poky_mips} && \
+	./${poky_x86} -y && \
+	./${poky_mips} -y && \
+	rm -f ${poky_x86} ${poky_mips}
+
