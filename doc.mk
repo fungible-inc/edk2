@@ -52,7 +52,7 @@ run_cclinux: Dockerfile.run_cclinux
 
 # run_sc
 run_sc: Dockerfile.run_sc
-	echo $(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_sc
 bld_sc: run_sc
