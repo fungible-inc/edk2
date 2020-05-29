@@ -14,7 +14,6 @@ images += bld_hd
 images += bld_golang
 images += bld_gccgo
 images += bld_apigateway
-images += run_apigateway
 images += $(arg_user)/bld_fun_on_demand
 images += run_sc
 images += bld_sc
@@ -101,6 +100,3 @@ integ_test: Dockerfile.integ_test
 bld_apigateway: Dockerfile.bld_apigateway
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
-# run_apigateway
-run_apigateway: Dockerfile.run_apigateway
-	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
