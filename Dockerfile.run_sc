@@ -1,3 +1,6 @@
+# This image can be removed from FunDocker repository once no
+# release branches are using it.
+
 # ubunutu 18.04.2 with kernel release 4.18.0-16
 FROM ubuntu:bionic-20190307
 RUN apt-get update && \
