@@ -38,6 +38,16 @@ RUN curl -sL https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz |  tar zx && \
 	mv linux-amd64/helm /usr/local/bin/helm && \
 	/bin/rm -rf linux-amd64
 
+# kubectl
+RUN curl  -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
+    chmod +x ./kubectl && \
+    mv ./kubectl /usr/local/bin/kubectl 
+
+# kind
+RUN curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64 && \
+    chmod +x ./kind && \
+    mv ./kind /usr/local/bin/kind
+
 # just added jenkins to docker group, need a new login session.
 ENV USER $arg_user
 USER $arg_user
