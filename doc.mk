@@ -55,7 +55,7 @@ run_sc: Dockerfile.run_sc
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_sc
-bld_sc: run_sc
+bld_sc: 
 
 bld_sc: Dockerfile.bld_sc
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
