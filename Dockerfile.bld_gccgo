@@ -12,7 +12,7 @@ RUN apt-get update && apt-get --allow-yes=true -yy install --no-install-recommen
     git \
     && apt-get clean
 
-ENV GO_VER=1.14.1
+ENV GO_VER=1.14.4
 RUN mkdir -p /opt && cd /opt \
     && curl https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz | tar vzxf - \
     && ln -sf $(pwd)/go/bin/* /usr/bin
