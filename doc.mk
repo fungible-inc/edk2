@@ -16,7 +16,7 @@ images += bld_golang
 images += bld_gccgo
 images += bld_apigateway
 images += $(arg_user)/bld_fun_on_demand
-images += run_sc
+#images += run_sc
 images += bld_sc
 images += $(arg_user)/bld_sc
 
