@@ -3,7 +3,7 @@ ARG DOC_REG
 FROM ${DOC_REG}/run_funos:latest
 
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make gcc-7 g++-7 \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make gcc-8 g++-8 \
 	git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
 	libelf-dev qemu-utils libguestfs-tools libvirt-clients bc sudo linux-image-generic \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
@@ -63,7 +63,7 @@ RUN apt-get install --no-install-recommends --no-install-suggests -y \
 
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	gcc-arm-linux-gnueabi libc6-dev-armel-cross
+	gcc-8-arm-linux-gnueabi libc6-dev-armel-cross
 
 # Libfunq requirements
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libpcap-dev libreadline-dev
