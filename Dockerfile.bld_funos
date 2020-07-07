@@ -21,8 +21,9 @@ RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 # mips gcc
 RUN mkdir /opt/cross && \
 	curl -s http://dochub.fungible.local/doc/sw/tools/mips/foo8/mips64/lib/gcc/mips64-unknown-elf | \
-	tar xfz - -C /opt/cross && \
-	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
+	tar xfz - -C /opt/cross 
+
+RUN curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
 	tar xfz - -C /opt/cross
 
 # yocto
