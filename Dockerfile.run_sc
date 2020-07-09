@@ -23,7 +23,7 @@ RUN echo "deb https://downloads.apache.org/cassandra/debian 311x main" | tee -a 
 
 RUN pip install --upgrade-strategy only-if-needed setuptools wheel 
 RUN pip install --upgrade-strategy only-if-needed flask flask-cors kafka-python confluent-kafka redis enum34 requests cassandra-driver \
-	grpc grpcio==1.26.0 grpcio-tools==1.26.0 thrift==0.11.0 elasticsearch passlib flask_httpauth pykmip
+	grpcio==1.26.0 grpcio-tools==1.26.0 thrift==0.11.0 elasticsearch passlib flask_httpauth pykmip
 
 RUN apt-get update && \
     DEBIAN_FRONTEN=noninteractive apt-get install -y tzdata
