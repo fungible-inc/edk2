@@ -5,7 +5,7 @@ RUN apt-get update && \
 	software-properties-common python-pip debconf-utils apt-utils openjdk-8-jre gpg-agent wget nginx tzdata
 
 RUN pip install --upgrade-strategy only-if-needed setuptools wheel
-RUN pip install --upgrade-strategy only-if-needed grpcio==1.26.0 grpcio-tools==1.26.0 pylint=1.9.5
+RUN pip install --upgrade-strategy only-if-needed grpcio==1.26.0 grpcio-tools==1.26.0 pylint==1.9.5
 
 # Installing nodejs from nodesource for building GUI
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
