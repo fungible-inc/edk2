@@ -7,7 +7,7 @@ RUN apt-get update && \
 	git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
 	libelf-dev qemu-utils libguestfs-tools libvirt-clients bc sudo linux-image-generic \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
-	pandoc bison flex
+	pandoc bison flex unzip
 
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
 
@@ -19,15 +19,8 @@ RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 # mips gcc
-#RUN mkdir /opt/cross && \
-#	curl -s http://dochub.fungible.local/doc/sw/tools/mips/linux-mips64-gcc-9.3.tar.gz | \
-#	tar xfz - -C /opt/cross && \
-#	ln -s /opt/cross/mips64/lib/gcc/mips64-unknown-elf/9 /opt/cross/mips64/lib/gcc/mips64-unknown-elf/8 && \
-#	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
-#	tar xfz - -C /opt/cross
-
 RUN mkdir /opt/cross && \
-	curl -s http://dochub.fungible.local/doc/sw/tools/mips/linux-mips64-gcc-8.2.tar.gz | \
+	curl -s http://dochub.fungible.local/doc/sw/tools/mips/linux-mips64-gcc-9.3.tar.gz | \
 	tar xfz - -C /opt/cross && \
 	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
 	tar xfz - -C /opt/cross
