@@ -10,6 +10,7 @@ images += run_cclinux
 images += integ_test
 images += bld_bcm
 images += bld_fpga
+images += $(arg_user)/bld_fpga
 images += bld_hd
 images += bld_golang
 images += bld_gccgo
@@ -66,6 +67,11 @@ $(arg_user)/bld_sc: Dockerfile.bld_sc.usr
 
 # bld_fpga
 bld_fpga: Dockerfile.bld_fpga
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+$(arg_user)/bld_fpga: bld_fpga
+
+$(arg_user)/bld_fpga: Dockerfile.bld_fpga.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_bcm
