@@ -24,7 +24,7 @@ ARG altera=http://dochub.fungible.local/doc/sw/tools
 ARG tool_chain=SoCEDSSetup-18.1.0.625-linux.run
 
 RUN wget -q ${altera}/${tool_chain} && \
-	chmod 755 ${poky_x86} ${tool_chain} && \
+	chmod 755 ${tool_chain} && \
 	./${tool_chain} --installdir /opt/altera --mode unattended --accept_eula 1 && \
 	rm -f ${tool_chain}
 
@@ -32,11 +32,11 @@ RUN wget -q ${altera}/${tool_chain} && \
 # Note that this image is used to build angstrom tools chain which is to be installed here.
 # kind of chicken and egg situation which has been overcome by creating first angstrom build without
 # the following and then Dockerfile is updated to include this installation.
-ARG angstrom=http://dochub.fungible.local/doc/jenkins/fpga_angstrom/latest
+ARG angstrom=http://dochub.fungible.local/doc/jenkins/master/fpga_angstrom/latest
 ARG tool_chain=angstrom-glibc-x86_64-armv7at2hf-neon-v2018.06-toolchain.sh
 
 RUN wget -q ${angstrom}/${tool_chain} && \
-	chmod 755 ${poky_x86} ${tool_chain} && \
+	chmod 755 ${tool_chain} && \
 	./${tool_chain} -y -d /opt/arm-sdk && \
 	rm -f ${tool_chain}
 
