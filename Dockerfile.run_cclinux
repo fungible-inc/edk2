@@ -78,7 +78,7 @@ RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT
 # Set up pipenv for storage agent
 #
 RUN mkdir -p /var/opt/storage_agent 
-RUN cd /var/opt/storage_agent && pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
+RUN cd /var/opt/storage_agent && pipenv --python 2 &&  pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
 
 #
 # snapshot, dpc_cli
