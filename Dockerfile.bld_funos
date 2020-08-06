@@ -9,9 +9,6 @@ RUN apt-get update && \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
 	pandoc bison flex unzip
 
-# signing
-RUN pip3 install asn1crypto
-
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
 
 RUN pip2 install PyYAML jinja2 ply pandas
@@ -72,8 +69,9 @@ RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libpcap-dev libreadline-dev
 
 # SBPFirmware
-RUN apt-get install -y cmake
+#RUN apt-get install -y cmake
 RUN pip2 install PyCrypto cryptography
+RUN pip3 install python-pkcs11
 ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 
 # all apt-get commands should be above this
