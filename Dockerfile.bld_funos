@@ -4,13 +4,13 @@ FROM ${DOC_REG}/run_funos:latest
 
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make g++ \
-	git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
+	python3-pip git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
 	libelf-dev qemu-utils libguestfs-tools libvirt-clients bc sudo linux-image-generic \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
 	pandoc bison flex unzip
 
 # signing
-RUN pip2 install asn1crypto
+RUN pip3 install asn1crypto
 
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
 
