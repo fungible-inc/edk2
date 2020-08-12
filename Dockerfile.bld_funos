@@ -71,7 +71,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libpcap-dev lib
 # SBPFirmware
 #RUN apt-get install -y cmake
 RUN pip2 install PyCrypto cryptography
-RUN pip3 install python-pkcs11
+#RUN pip3 install python-pkcs11
 ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 
 # all apt-get commands should be above this
