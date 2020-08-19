@@ -3,15 +3,13 @@ ARG DOC_REG
 FROM ${DOC_REG}/run_funos:latest
 
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make g++ \
-	python3-pip git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
-	libelf-dev qemu-utils libguestfs-tools libvirt-clients bc sudo linux-image-generic \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make gcc-5 g++-5 \
+	python-pip git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
+	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
-	pandoc bison flex unzip cmake gccgo-10-multilib-mipsisa64r6-linux-gnuabi64
+	pandoc bison flex unzip
 
-RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
-
-RUN pip2 install PyYAML jinja2 ply pandas
+RUN pip install PyYAML jinja2 ply pandas
 
 RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
@@ -27,7 +25,7 @@ RUN mkdir /opt/cross && \
 
 # yocto
 # hardcoded to master dev-line as yocto will probably never branch
-ARG YOCTO_BLD=837
+ARG YOCTO_BLD=814
 ARG yocto=http://dochub.fungible.local/doc/jenkins/master/cc-linux-yocto/$YOCTO_BLD
 ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh
 ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-3.0.2.sh
@@ -40,10 +38,20 @@ RUN wget -q ${yocto}/x86_64/${poky_x86} && \
 	rm -f ${poky_x86} ${poky_mips}
 
 # u-boot
-RUN apt-get install -y gcc-mips64-linux-gnuabi64
+RUN apt-get update; apt-get install -y gcc-mips64-linux-gnuabi64
+
+# SBPFirmware
+RUN apt-get update; apt-get install -y libsofthsm2 softhsm2 python3 python3-pip cmake
+RUN pip install pycrypto ed25519 curve25519-donna  ecdsa cryptography
+RUN pip3 install python-pkcs11
+
+# To match version from SBPFirmware instructions.
+RUN git clone https://github.com/doegox/python-cryptoplus.git; cd python-cryptoplus; git checkout a5a1f8aecce4ddf476b2d80b586822d9e91eeb7d; python setup.py install
+
+ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 
 # accel-regex
-RUN pip2 install nose
+RUN pip install nose
 
 #golang
 ARG GO_VER=go1.13.4
@@ -59,20 +67,14 @@ ENV PATH "${PATH}:${GO_LOCAL_DIR}/go/bin"
 # Ydk-gen build requirements
 RUN apt-get install --no-install-recommends --no-install-suggests -y \
 	libxml2-dev doxygen graphviz libssh-dev libcurl4-openssl-dev libxslt-dev libtool-bin \
-	libpcre3-dev libxslt1-dev python3-dev python2-dev devscripts debhelper
+	libpcre3-dev libxslt1-dev python3-dev python-dev devscripts debhelper
 
 # dpcsh on BMC (arm)
 RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	gcc-9-arm-linux-gnueabi libc6-dev-armel-cross
+	gcc-arm-linux-gnueabi libc6-dev-armel-cross
 
 # Libfunq requirements
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libpcap-dev libreadline-dev
-
-# SBPFirmware
-#RUN apt-get install -y cmake
-RUN pip2 install PyCrypto cryptography
-#RUN pip3 install python-pkcs11
-ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
 
 # all apt-get commands should be above this
 RUN apt-get clean

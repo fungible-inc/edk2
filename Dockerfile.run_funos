@@ -1,10 +1,6 @@
-# ubunut 20.04
-FROM ubuntu:focal-20200606
+# ubunut 18.04.2 with kernel version 4.18.0-16
+FROM ubuntu:bionic-20190307
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python2 curl libpixman-1-0 \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y python curl libpixman-1-0 \
 	libfdt-dev libglib2.0-dev ssh gcovr cpu-checker libnl-3-200 libnl-route-3-200 time
 ENV ASAN_OPTIONS disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1
-
-# For now set default version of python to 2 until all references to python are 
-# either upgraded to 3 or changed to python2
-RUN ln -s /usr/bin/python2 /usr/bin/python
