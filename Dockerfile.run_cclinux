@@ -4,10 +4,10 @@ RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
 	iproute2 redis-server python-pip python3-pip python3-setuptools python-thrift sudo libconfig9 \
 	libnl-3-200 libnl-route-3-200 libssh-4 libhiredis0.13 libpci3 pciutils net-tools isc-dhcp-client \
-	iputils-ping libxslt1.1 ethtool tcpdump vim python-setuptools
+	iputils-ping libxslt1.1 ethtool tcpdump vim python-setuptools ngnix
 
 RUN pip install --upgrade wheel pipenv
-RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
+RUN pip install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx waitress
 RUN pip install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch click hexdump tabulate futures ipaddress typing future
 
 RUN pip3 install --upgrade wheel
