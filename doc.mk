@@ -47,7 +47,9 @@ $(arg_user)/bld_funos: Dockerfile.bld_funos.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # run_cclinux
-run_cclinux: Dockerfile.run_cclinux 
+run_cclinux: run_funos
+
+run_cclinux: Dockerfile.run_cclinux
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # run_sc

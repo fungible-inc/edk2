@@ -9,8 +9,6 @@ RUN apt-get update && \
 	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
 	pandoc bison flex unzip cmake gccgo-10-multilib-mipsisa64r6-linux-gnuabi64
 
-RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
-
 RUN pip2 install PyYAML jinja2 ply pandas
 
 RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
