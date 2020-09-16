@@ -12,7 +12,7 @@ RUN pip install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch 
 
 RUN pip3 install --upgrade wheel
 #as required by the storage agent, python 3 version
-RUN pip3 install --upgrade-strategy only-if-needed  --only-binary :all: Flask==1.1 redis==3.0 gevent==1.4
+RUN pip3 install --upgrade-strategy only-if-needed  --only-binary :all: Flask==1.1 redis==3.0 gevent==1.4 cheroot==8.4.5
 RUN pip3 install --upgrade-strategy only-if-needed thrift==0.13 
 
 
