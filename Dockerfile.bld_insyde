@@ -6,7 +6,6 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y locales python curl libpixman-
 
 ENV ASAN_OPTIONS disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1
 
-# env needed for angstrom build.
 RUN locale-gen en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
