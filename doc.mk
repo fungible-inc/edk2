@@ -9,6 +9,8 @@ images += $(arg_user)/dind
 images += run_cclinux
 images += integ_test
 images += bld_bcm
+images += bld_insyde
+images += $(arg_user)/bld_insyde
 images += bld_fpga
 images += $(arg_user)/bld_fpga
 images += bld_hd
@@ -76,6 +78,15 @@ $(arg_user)/bld_fpga: Dockerfile.bld_fpga.usr
 
 # bld_bcm
 bld_bcm: Dockerfile.bld_bcm
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_insyde
+bld_insyde: Dockerfile.bld_insyde
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+$(arg_user)/bld_insyde: bld_insyde
+
+$(arg_user)/bld_insyde: Dockerfile.bld_insyde.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_hd
