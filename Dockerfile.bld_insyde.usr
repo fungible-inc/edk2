@@ -1,0 +1,27 @@
+# This is a dockerfile to build a wapper build image with the user who is building
+#
+# toggle between latest and version
+FROM ${DOC_REG}:latest
+
+# There are no defaults for adduser, so one must pass them at build time as
+# docker build -t user/funos_build --build-arg arg_user=$(id -un) --build-arg arg_uid=$(id -u) .
+# lastlog and faillog create huge sparse file if the uid is a very large number as in LDAP uid.
+# just delete them as suggested by https://github.com/sagemathinc/cocalc/issues/2287
+# also add -l to useradd
+ARG arg_user
+ARG arg_uid
+
+RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
+	useradd -l -m -u $arg_uid -s /bin/sh $arg_user && \
+	mkdir -p /etc/sudoers.d/ && \
+	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
+
+RUN apt-get update
+
+RUN echo "dash dash/sh boolean false" | debconf-set-selections && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+# set the enviroment for the build
+WORKDIR /home/$arg_user
+USER $arg_user
+CMD ["/bin/bash"]
+
