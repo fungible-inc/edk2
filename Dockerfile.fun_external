@@ -1,0 +1,51 @@
+# ubunut 20.04
+FROM ubuntu:focal-20200606
+
+ARG DOC_REG
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		ca-certificates \
+		cmake \
+		curl \
+		g++ \
+		git \
+		make
+
+# NOTE: /fun_external is hardcoded in funcp builds. So need to install these under that dir.
+ARG FUN_EXTERNAL=/fun_external
+RUN mkdir -p $FUN_EXTERNAL
+
+RUN	cd $FUN_EXTERNAL \
+	&& git clone https://github.com/google/googletest.git \
+	&& cd $FUN_EXTERNAL/googletest \
+	&& git checkout release-1.10.0 \
+	&& mkdir -p $FUN_EXTERNAL/googletest/googletest/build \
+	&& cd $FUN_EXTERNAL/googletest/googletest/build \
+	&& cmake .. \
+	&& make \
+	&& cd .. \
+	&& cmake CMakeLists.txt \
+	&& make \
+	&& cd $FUN_EXTERNAL/googletest/googlemock \
+	&& cmake CMakeLists.txt \
+	&& make
+
+RUN	cd $FUN_EXTERNAL \
+	&& git clone https://github.com/google/flatbuffers.git \
+	&& cd flatbuffers \
+	&& git checkout v1.12.0 \
+	&& cmake -G "Unix Makefiles" \
+	&& make flatc \
+	&& sed -i '/endiantest\|FLATBUFFERS_LITTLEENDIAN)/s/^/\/\//g' include/flatbuffers/flatbuffers.h
+
+RUN curl -fsSL https://github.com/nlohmann/json/archive/v3.0.1.tar.gz | tar xfz - -C $FUN_EXTERNAL \
+	&& ln -s json-3.0.1 $FUN_EXTERNAL/json
+
+# all apt-get commands should be above this
+# clean up
+RUN apt-get clean
+
+CMD ["/bin/bash"]

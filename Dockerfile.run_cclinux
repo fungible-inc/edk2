@@ -1,37 +1,128 @@
+# runtime ccLinux
 ARG DOC_REG
+FROM ${DOC_REG}/zmq:latest AS zmq-base
+FROM ${DOC_REG}/hiredis_swss:latest AS redis-base
+FROM ${DOC_REG}/nanomsg:latest AS nanomsg-base
+
 FROM ${DOC_REG}/run_funos:latest
-RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	iproute2 redis-server python3-pip python3-setuptools sudo libconfig9 \
-	libnl-3-200 libnl-route-3-200 libssh-4 libhiredis0.14 libpci3 pciutils net-tools isc-dhcp-client \
-	iputils-ping libxslt1.1 ethtool tcpdump vim python-setuptools
+
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -qq \
+	&& apt-get install -qq -y --no-install-recommends --no-install-suggests \
+		iproute2 \
+		python3-pip \
+		python3-setuptools \
+		sudo \
+		libnl-3-200 \
+		libnl-route-3-200 \
+		libssh-4 \
+		libpci3 \
+		libjson-c-dev \
+		pciutils \
+		net-tools \
+		iputils-ping \
+		libxslt1.1 \
+		ethtool \
+		tcpdump \
+		python-setuptools \
+		isc-dhcp-client \
+		libconfig9 \
+		qemu-utils \
+		python2-dev
+
+COPY --from=zmq-base /usr/local /usr/local
+
+COPY --from=redis-base /usr/local /usr/local
+
+COPY --from=nanomsg-base /usr/local /usr/local
+
+# nanomsg installation requires ldconfig
+RUN ldconfig
 
 #RUN pip2 install --upgrade wheel pipenv
-RUN pip2 install --upgrade-strategy only-if-needed --only-binary :all: flask redis networkx
-RUN pip2 install --upgrade-strategy only-if-needed pyyaml jinja2 pyzmq six bunch click hexdump tabulate futures ipaddress typing future
 
-RUN pip3 install --upgrade wheel
+RUN pip2 install --upgrade-strategy only-if-needed --only-binary :all: \
+	redis
+
+RUN pip2 install --upgrade-strategy only-if-needed \
+	bitstring \
+	pyyaml \
+	jinja2 \
+	six \
+	tabulate \
+	typing \
+	ipaddress \
+	cffi \
+	nnpy \
+	config \
+	deepdiff \
+	enum34 \
+	jsonmerge \
+	netaddr \
+	ply \
+	scapy \
+	ctypesgen \
+	https://github.com/p4lang/ptf/archive/master.tar.gz
+
 #as required by the storage agent, python 3 version
-RUN pip3 install --upgrade-strategy only-if-needed  --only-binary :all: Flask==1.1 redis==3.0
-RUN pip3 install --upgrade-strategy only-if-needed thrift==0.13 
+RUN pip3 install --upgrade wheel
 
+RUN pip3 install --upgrade-strategy only-if-needed --only-binary :all: \
+	redis==3.0 \
+	Flask==1.1 \
+	redis==3.0 \
+	gevent==1.5a2 \
+	cheroot==8.4.5
+
+RUN pip3 install --upgrade-strategy only-if-needed thrift==0.13
+
+# end of ss agent
+
+ARG REDIS=6379
+RUN	REDIS_PORT=${REDIS} \
+	REDIS_CONFIG_FILE=/etc/opt.fungible/redis/redis_${REDIS}.conf \
+	REDIS_LOG_FILE=/var/log/fungible/redis_${REDIS}.log \
+	REDIS_DATA_DIR=/var/opt/fungible/lib/redis/${REDIS} \
+	REDIS_EXECUTABLE=`command -v redis-server` \
+	/bin/sh -x /usr/local/redis/utils/install_server.sh
+
+
+ARG REDIS=6380
+RUN	REDIS_PORT=${REDIS} \
+	REDIS_CONFIG_FILE=/etc/opt.fungible/redis/redis_${REDIS}.conf \
+	REDIS_LOG_FILE=/var/log/fungible/redis_${REDIS}.log \
+	REDIS_DATA_DIR=/var/opt/fungible/lib/redis/${REDIS} \
+	REDIS_EXECUTABLE=`command -v redis-server` \
+	/bin/sh -x /usr/local/redis/utils/install_server.sh
+
+ARG REDIS=6381
+RUN	REDIS_PORT=${REDIS} \
+	REDIS_CONFIG_FILE=/etc/opt.fungible/redis/redis_${REDIS}.conf \
+	REDIS_LOG_FILE=/var/log/fungible/redis_${REDIS}.log \
+	REDIS_DATA_DIR=/var/opt/fungible/lib/redis/${REDIS} \
+	REDIS_EXECUTABLE=`command -v redis-server` \
+	/bin/sh -x /usr/local/redis/utils/install_server.sh \
+	&& rm -rf /usr/local/redis
 
 # FRR login
-RUN groupadd -g 92 frr && groupadd -r -g 85 frrvty && \
-	adduser --system --ingroup frr --home /var/run/frr --gecos "FRR suite" --shell /sbin/nologin frr && \
-	usermod -a -G frrvty frr
+RUN groupadd -g 92 frr \
+	&& groupadd -r -g 85 frrvty \
+	&& adduser --system --ingroup frr --home /var/run/frr --gecos "FRR suite" --shell /sbin/nologin frr \
+	&& usermod -a -G frrvty frr
 
 # Fungible login
-RUN groupadd -g 3201 fungible && \
-	useradd -l -m -u 3201 -g fungible -s /bin/bash fcpusr && \
-	echo "fcpusr ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
+RUN groupadd -g 3201 fungible \
+	&& useradd -l -m -u 3201 -g fungible -s /bin/bash fcpusr \
+	&& echo "fcpusr ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
 
-RUN install -m 755 -o frr -g frr -d /var/log/frr && \
-	install -m 775 -o frr -g frrvty -d /etc/frr && \
-	install -m 640 -o frr -g frr /dev/null /etc/frr/zebra.conf && \
-	install -m 640 -o frr -g frr /dev/null /etc/frr/bgpd.conf && \
-	install -m 640 -o frr -g frr /dev/null /etc/frr/isisd.conf && \
-	install -m 640 -o frr -g frrvty /dev/null /etc/frr/vtysh.conf
+RUN install -m 755 -o frr -g frr -d /var/log/frr \
+	&& install -m 775 -o frr -g frrvty -d /etc/frr \
+	&& install -m 640 -o frr -g frr /dev/null /etc/frr/zebra.conf \
+	&& install -m 640 -o frr -g frr /dev/null /etc/frr/bgpd.conf \
+	&& install -m 640 -o frr -g frr /dev/null /etc/frr/isisd.conf \
+	&& install -m 640 -o frr -g frrvty /dev/null /etc/frr/vtysh.conf
 
 # Add /opt/fungible/lib in ld path
 RUN echo /opt/fungible/lib > /etc/ld.so.conf.d/fungible.conf
@@ -39,65 +130,14 @@ RUN echo /opt/fungible/lib > /etc/ld.so.conf.d/fungible.conf
 # PATH
 RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environment
 
-#RUN mkdir /var/run/sshd
+#ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
+#RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT
 
-# temp, need to take it from multi-stage docker for JSONC libjson-c.4, redis.conf, zmq
-#ADD http://dochub.fungible.local/doc/sw/tools/cclinux1.tar /tmp/cclinux.tar
-#RUN tar xf /tmp/cclinux.tar && rm -rf /tmp/cclinux.tar /tmp/cclinux && mkdir -p /var/lib/lldpad
+RUN printf '#!/bin/bash\nsudo rm -f /var/run/redis*\nfor p in 79 80 81\ndo\nsudo /etc/init.d/redis_63$p start\ndone\nexec $*\n' > /start_redis.sh \
+	&& chmod 755 /start_redis.sh
 
-ARG REDISCONF_DOWNLOAD_LOC=http://dochub.fungible.local/doc/jenkins/sandbox/frr/redis.conf
-ARG REDISCONF_LOCAL_DIR=/etc/redis/
-ADD $REDISCONF_DOWNLOAD_LOC $REDISCONF_LOCAL_DIR
-RUN chmod a+rwx /etc/redis/redis.conf && touch /var/log/redis.log && chmod a+rwx /var/log/redis.log && chmod a+rwx /var/lib/redis/ && mkdir -p /var/lib/redis/6379 && chmod a+rwx /var/lib/redis/6379
-	
-# Copy over OpenR needed packages.
-
-#ARG OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/sandbox/frr/
-#ARG OPENR_SYS_LIBS_TAR=openr_system_missing_qemu.tar
-#RUN cd /tmp && wget $OPENR_NEEDED_SYSTEM_LIBS_TAR_PATH/$OPENR_SYS_LIBS_TAR && tar xvf $OPENR_SYS_LIBS_TAR && cp missing/* /usr/lib && rm $OPENR_SYS_LIBS_TAR && rm -rf missing/
-
-#ARG OPENR_NEEDED_LIBS_TAR_PATH=http://dochub.fungible.local/doc/jenkins/openr/latest/
-#ARG OPENR_TAR=openr.tar
-#RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_TAR && tar xvf $OPENR_TAR && cp openr/openrb/lib/* /usr/lib && rm $OPENR_TAR && rm -rf openr/
-
-ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
-RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT 
-
-#
-# Set up OpenR breeze
-#
-#ARG OPENR_BREEZE_TAR=openr_breeze.tar 
-#RUN cd /tmp && wget $OPENR_NEEDED_LIBS_TAR_PATH/$OPENR_BREEZE_TAR && tar xvf $OPENR_BREEZE_TAR && \
-#    cp  /tmp/openr/build/srcs/fbthrift/build/bin/thrift1 /usr/local/bin && \
-#    cd /tmp/openr/build/srcs/fbzmq/fbzmq/py && python setup.py install && \
-#    cd /tmp/openr/build/srcs/fbthrift/thrift/lib/py && python setup.py install && \
-#    cd /tmp/openr/openr/py && python setup.py build && python setup.py install && \
-#    cd /tmp && rm -rf openr/
-
-#
-# Set up pipenv for storage agent
-#
-#RUN mkdir -p /var/opt/storage_agent 
-#RUN cd /var/opt/storage_agent && pipenv --python 2 &&  pipenv install ipaddress redis thrift==0.11 Flask==0.10.1 
-
-#
-# snapshot, dpc_cli
-#
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	python2.7-dev
-
-RUN pip2 install --upgrade-strategy only-if-needed netaddr bitstring ctypesgen prettytable cmd2==0.8.5
-
-ADD http://dochub.fungible.local/doc/jenkins/sandbox/frr/dpc_snapshot.tar /tmp
-RUN cd /tmp && tar xf dpc_snapshot.tar && rm -f /tmp/dpc_snapshot.tar &&\
-    cd /tmp/dpcsh && python setup.py install  &&\
-    cd /tmp/dpcsh_interactive_client  && python setup.py install
+# all apt-get commands should be above this
+# clean up
 RUN apt-get clean
 
-# set the enviroment for the build
-#WORKDIR /home/fcpusr
-# some test script expets $USER to be set
-#ENV USER fcpusr
-#USER fcpusr
 CMD ["/bin/bash"]
-

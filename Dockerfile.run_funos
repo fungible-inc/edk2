@@ -1,14 +1,31 @@
 # ubunut 20.04
 FROM ubuntu:focal-20200606
-RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python2 curl libpixman-1-0 \
-	libfdt-dev libglib2.0-dev ssh gcovr cpu-checker libnl-3-200 libnl-route-3-200 time
+
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		python3 \
+		python2 \
+		ca-certificates \
+		curl \
+		libpixman-1-0 \
+		libfdt-dev \
+		libglib2.0-dev \
+		ssh \
+		gcovr \
+		cpu-checker \
+		libnl-3-200 \
+		libnl-route-3-200 \
+		time
+
 ENV ASAN_OPTIONS disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1
 
-# For now set default version of python to 2 until all references to python are 
+# For now set default version of python to 2 until all references to python are
 # either upgraded to 3 or changed to python2
 RUN ln -s /usr/bin/python2 /usr/bin/python
 
 # Also install pip2 untill all are changed to pip3
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
 
+CMD ["/bin/bash"]
