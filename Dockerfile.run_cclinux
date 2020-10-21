@@ -19,6 +19,7 @@ RUN apt-get update -qq \
 		libnl-route-3-200 \
 		libssh-4 \
 		libpci3 \
+		libreadline8 \
 		libjson-c-dev \
 		pciutils \
 		net-tools \

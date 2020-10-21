@@ -73,7 +73,3 @@ git pull
 cd $WORKSPACE
 docker run -t --rm --cap-add SYS_PTRACE -v $PWD:$PWD -v $HOME:/home/$USER -w $PWD $USER/bld_funos $*
 ```
-
-# Prepare run_cclinux
-
-run ./prepare_run_cclinux.sh to generate tar ball for dpc_cli and snapshot. The usage could be found via  ./prepare_run_cclinux.sh --help

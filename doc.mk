@@ -68,15 +68,17 @@ fun_external: Dockerfile.fun_external
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # run_cclinux
+
 run_cclinux: run_funos hiredis_swss nanomsg zmq fun_external
 
 run_cclinux: Dockerfile.run_cclinux
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
-$(arg_user)/run_cclinux: run_funos
+$(arg_user)/run_cclinux: run_cclinux
 
-$(arg_user)/run_cclinux: Dockerfile.run_funos.usr
+$(arg_user)/run_cclinux: Dockerfile.run_cclinux.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
 
 # run_sc
 run_sc: Dockerfile.run_sc
