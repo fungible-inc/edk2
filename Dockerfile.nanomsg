@@ -1,0 +1,23 @@
+# ubunut 20.04
+FROM ubuntu:focal-20201008
+
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		build-essential \
+		ca-certificates \
+		curl \
+		cmake
+
+RUN curl -sSL https://github.com/nanomsg/nanomsg/archive/1.0.0.tar.gz | tar xfz - \
+	&& mkdir -p nanomsg-1.0.0/build \
+	&& cd nanomsg-1.0.0/build \
+	&& cmake .. \
+	&& make install
+
+# all apt-get commands should be above this
+# clean up
+RUN apt-get clean
+
+RUN rm -rf nanomsg*

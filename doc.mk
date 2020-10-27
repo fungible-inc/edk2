@@ -6,7 +6,12 @@ images += $(arg_user)/run_funos
 images += bld_funos 
 images += $(arg_user)/bld_funos
 images += $(arg_user)/dind
+images += hiredis_swss
+images += nanomsg
+images += zmq
+images += fun_external
 images += run_cclinux
+images += $(arg_user)/run_cclinux
 images += integ_test
 images += bld_bcm
 images += bld_insyde
@@ -18,7 +23,7 @@ images += bld_golang
 images += bld_gccgo
 images += bld_apigateway
 images += $(arg_user)/bld_fun_on_demand
-images += run_sc
+#images += run_sc
 images += bld_sc
 images += $(arg_user)/bld_sc
 
@@ -38,7 +43,7 @@ $(arg_user)/run_funos: Dockerfile.run_funos.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_funos
-bld_funos: run_funos
+bld_funos: run_cclinux
 
 bld_funos: Dockerfile.bld_funos
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
@@ -48,16 +53,41 @@ $(arg_user)/bld_funos: bld_funos
 $(arg_user)/bld_funos: Dockerfile.bld_funos.usr
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
-# run_cclinux
-run_cclinux: Dockerfile.run_cclinux 
+# hiredis_swss
+hiredis_swss: Dockerfile.hiredis_swss
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# nanomsg
+nanomsg: Dockerfile.nanomsg
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# zmq
+zmq: Dockerfile.zmq
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# fun_external
+fun_external: Dockerfile.fun_external
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# run_cclinux
+
+run_cclinux: run_funos hiredis_swss nanomsg zmq fun_external
+
+run_cclinux: Dockerfile.run_cclinux
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+$(arg_user)/run_cclinux: run_cclinux
+
+$(arg_user)/run_cclinux: Dockerfile.run_cclinux.usr
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
 
 # run_sc
 run_sc: Dockerfile.run_sc
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_sc
-bld_sc: run_sc
+bld_sc: 
 
 bld_sc: Dockerfile.bld_sc
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<

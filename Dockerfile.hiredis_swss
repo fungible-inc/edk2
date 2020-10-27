@@ -1,0 +1,49 @@
+# ubunut 20.04
+FROM ubuntu:focal-20201008
+
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		autoconf \
+		automake \
+		build-essential \
+		ca-certificates \
+		cmake \
+		cpio \
+		curl \
+		git \
+		libnl-3-dev \
+		libnl-genl-3-dev \
+		libnl-route-3-dev \
+		libtool \
+		pkg-config
+
+RUN git clone https://github.com/antirez/redis.git \
+	&& cd redis \
+	&& git checkout c7613cf34ed8f49681607d247cdf12a7e80cec94 \
+	&& sed -i 's/^# unixsocket/unixsocket/g' redis.conf \
+	&& sed -i 's/^notify-keyspace-events.*/notify-keyspace-events KEA/g' redis.conf \
+	&& make \
+	&& make install \
+	&& find redis.conf utils -print | cpio -pudmB /usr/local/redis
+
+RUN	git clone https://github.com/redis/hiredis.git \
+	&& cd hiredis && git checkout a65537a672de845f3f4530050d1e7bd88d51ac67 \
+	&& make install
+
+RUN	git clone https://github.com/fun-jenkins/sonic-swss-common.git \
+	&& cd sonic-swss-common \
+	&& ./autogen.sh \
+	&& ./configure --prefix=/usr/local \
+	&& make -j8 \
+	&& make install \
+	&& mkdir -p /usr/local/include/sonic-swss-common/common \
+	&& cd common \
+	&& cp -a *.h /usr/local/include/sonic-swss-common/common
+
+# all apt-get commands should be above this
+# clean up
+RUN apt-get clean
+
+RUN rm -rf redis hiredi ssonic-swss-common

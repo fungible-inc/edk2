@@ -1,80 +1,140 @@
+# build funsdk docker
 ARG DOC_REG
 
-FROM ${DOC_REG}/run_funos:latest
+FROM ${DOC_REG}/fun_external:latest AS fun_external-base
+FROM ${DOC_REG}/run_cclinux:latest
 
-RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common make gcc-5 g++-5 \
-	python-pip git pkg-config libpixman-1-dev libfdt-dev rsync xxd wget libcap-dev libattr1-dev \
-	libelf-dev qemu-utils libguestfs-tools libvirt-bin bc sudo linux-image-generic \
-	libnl-3-dev libnl-route-3-dev ninja-build python-yaml python-jinja2 automake libtool \
-	pandoc bison flex unzip jq makeself
+ARG GIT_SSL_NO_VERIFY=1
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		automake \
+		bc \
+		bison \
+		cmake \
+		flex \
+		g++ \
+		gcc-mips64-linux-gnuabi64 \
+		gccgo-10-multilib-mipsisa64r6-linux-gnuabi64 \
+		git \
+		gpg-agent \
+		libattr1-dev \
+		libcap-dev \
+		libelf-dev \
+		libfdt-dev \
+		libguestfs-tools \
+		libnl-3-dev \
+		libnl-route-3-dev \
+		libpixman-1-dev \
+		libtool \
+		libvirt-clients \
+		linux-image-generic \
+		make \
+		ninja-build \
+		pandoc \
+		pkg-config \
+		python3-pip \
+		python-jinja2 \
+		python-yaml \
+		qemu-utils \
+		rsync \
+		software-properties-common \
+		unzip \
+		wget \
+		jq \
+		makeself \
+		xxd
 
-RUN pip install PyYAML jinja2 ply pandas
+RUN pip2 install \
+	PyYAML \
+	jinja2 \
+	ply \
+	pandas \
+	nose
 
-RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
-	apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
+RUN	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
+	&& add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+	&& apt-get update \
+	&& apt-get install -qq --yes --no-install-recommends docker-ce
 
+ARG DOCHUB_URL=http://dochub.fungible.local/doc
 # mips gcc
-RUN mkdir /opt/cross && \
-	curl -s http://dochub.fungible.local/doc/sw/tools/mips/linux-mips64-gcc-8.2.tar.gz | \
-	tar xfz - -C /opt/cross && \
-	curl -s http://dochub.fungible.local/doc/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
-	tar xfz - -C /opt/cross
+RUN mkdir /opt/cross \
+	&& curl -sS ${DOCHUB_URL}/sw/tools/mips/linux-mips64-gcc-8.2.tar.gz | tar xfz - -C /opt/cross \
+	&& curl -sS ${DOCHUB_URL}/sw/tools/mips/codescape_16_3_crosstool/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz | \
+		tar xfz - -C /opt/cross
 
 # yocto
 # hardcoded to master dev-line as yocto will probably never branch
-ARG YOCTO_BLD=840
-ARG yocto=http://dochub.fungible.local/doc/jenkins/master/cc-linux-yocto/$YOCTO_BLD
-ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh
-ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-3.0.2.sh
+ARG YOCTO_BLD=852
+ARG POKY_VER=3.0.2
+ARG yocto=${DOCHUB_URL}/jenkins/master/cc-linux-yocto/$YOCTO_BLD
+ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-${POKY_VER}.sh
+ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-${POKY_VER}.sh
 
-RUN wget -q ${yocto}/x86_64/${poky_x86} && \
-	wget -q ${yocto}/mips64hv/${poky_mips} && \
-	chmod 755 ${poky_x86} ${poky_mips} && \
-	./${poky_x86} -y && \
-	./${poky_mips} -y && \
-	rm -f ${poky_x86} ${poky_mips}
-
-# u-boot
-RUN apt-get update; apt-get install -y gcc-mips64-linux-gnuabi64
-
-# SBPFirmware
-RUN apt-get update; apt-get install -y libsofthsm2 softhsm2 python3 python3-pip cmake
-RUN pip install pycrypto ed25519 curve25519-donna  ecdsa cryptography
-RUN pip3 install python-pkcs11
-
-# To match version from SBPFirmware instructions.
-RUN git clone https://github.com/doegox/python-cryptoplus.git; cd python-cryptoplus; git checkout a5a1f8aecce4ddf476b2d80b586822d9e91eeb7d; python setup.py install
-
-ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
-
-# accel-regex
-RUN pip install nose
+RUN wget -q ${yocto}/x86_64/${poky_x86} \
+	&& wget -q ${yocto}/mips64hv/${poky_mips} \
+	&& chmod 755 ${poky_x86} ${poky_mips} \
+	&& ./${poky_x86} -y \
+	&& ./${poky_mips} -y \
+	&& rm -f ${poky_x86} ${poky_mips}
 
 #golang
 ARG GO_VER=go1.13.4
 ARG GO_DOWNLOAD_LOC=https://dl.google.com/go/$GO_VER.linux-amd64.tar.gz
 ARG GO_LOCAL_DIR=/usr/lib
 ARG GO_LOCAL=/usr/lib/$GO_VER.linux-amd64.tar.gz
-
-# Install golang package to docker
 ADD $GO_DOWNLOAD_LOC $GO_LOCAL_DIR
 RUN cd $GO_LOCAL_DIR; tar xvf $GO_LOCAL; rm $GO_LOCAL
 ENV PATH "${PATH}:${GO_LOCAL_DIR}/go/bin"
 
-# Ydk-gen build requirements
-RUN apt-get install --no-install-recommends --no-install-suggests -y \
-	libxml2-dev doxygen graphviz libssh-dev libcurl4-openssl-dev libxslt-dev libtool-bin \
-	libpcre3-dev libxslt1-dev python3-dev python-dev devscripts debhelper
-
 # dpcsh on BMC (arm)
-RUN	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
-	gcc-arm-linux-gnueabi libc6-dev-armel-cross
+RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+	gcc-9-arm-linux-gnueabi \
+	libc6-dev-armel-cross
 
 # Libfunq requirements
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpci-dev libpcap-dev libreadline-dev
+RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+	libpci-dev \
+	libpcap-dev \
+	libreadline-dev
+
+# SBPFirmware
+RUN pip2 install \
+	PyCrypto \
+	cryptography
+ENV MIPS_ELF_ROOT=/opt/cross/mips-mti-elf/2016.05-03/
+
+# FunCP
+RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+	debhelper \
+	devscripts \
+	doxygen \
+	graphviz \
+	install-info \
+	libboost-dev \
+	libcurl4-openssl-dev \
+	libnl-genl-3-dev \
+	libpcre3-dev \
+	libssh-dev \
+	libtool-bin \
+	libxml2-dev \
+	libxslt1-dev \
+	libxslt-dev \
+	python2-dev \
+	python3-dev \
+	python3-sphinx \
+	texinfo
+
+# comment by Jialin: ydk has nested cmake submodules, which I don't really want to touch :-)
+# hence symlink
+RUN	ln -s libssh.so /usr/lib/x86_64-linux-gnu/libssh_threads.so
+
+# NOTE: /fun_external is hardcoded in funcp builds. So need to install these under that dir.
+COPY --from=fun_external-base /fun_external /fun_external
 
 # all apt-get commands should be above this
+# clean up
 RUN apt-get clean
+
+CMD ["/bin/bash"]
