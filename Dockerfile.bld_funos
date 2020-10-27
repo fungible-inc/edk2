@@ -67,7 +67,7 @@ RUN mkdir /opt/cross \
 # yocto
 # hardcoded to master dev-line as yocto will probably never branch
 #ARG DOCHUB_URL=http://dochub.fungible.local/doc
-ARG YOCTO_BLD=847
+ARG YOCTO_BLD=852
 ARG POKY_VER=3.0.2
 ARG yocto=${DOCHUB_URL}/jenkins/master/cc-linux-yocto/$YOCTO_BLD
 ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-${POKY_VER}.sh

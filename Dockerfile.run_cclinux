@@ -42,8 +42,6 @@ COPY --from=nanomsg-base /usr/local /usr/local
 # nanomsg installation requires ldconfig
 RUN ldconfig
 
-#RUN pip2 install --upgrade wheel pipenv
-
 RUN pip2 install --upgrade-strategy only-if-needed --only-binary :all: \
 	redis
 
@@ -74,7 +72,6 @@ RUN pip3 install --upgrade-strategy only-if-needed --only-binary :all: \
 	redis==3.0 \
 	Flask==1.1 \
 	redis==3.0 \
-	gevent==1.5a2 \
 	cheroot==8.4.5
 
 RUN pip3 install --upgrade-strategy only-if-needed thrift==0.13
@@ -130,9 +127,6 @@ RUN echo /opt/fungible/lib > /etc/ld.so.conf.d/fungible.conf
 
 # PATH
 RUN echo PATH=$PATH:/opt/fungible/bin/frr:/opt/fungible/sbin/frr > /etc/environment
-
-#ARG DHCLIENT=http://dochub.fungible.local/doc/jenkins/sandbox/frr/dhclient.conf
-#RUN cd /etc/dhcp && rm -f dhclient.conf && wget $DHCLIENT
 
 RUN printf '#!/bin/bash\nsudo rm -f /var/run/redis*\nfor p in 79 80 81\ndo\nsudo /etc/init.d/redis_63$p start\ndone\nexec $*\n' > /start_redis.sh \
 	&& chmod 755 /start_redis.sh
