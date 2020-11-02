@@ -80,13 +80,10 @@ RUN wget -q ${yocto}/x86_64/${poky_x86} \
 	&& rm -f ${poky_x86} ${poky_mips}
 
 #golang
-ARG GO_VER=go1.13.4
-ARG GO_DOWNLOAD_LOC=https://dl.google.com/go/$GO_VER.linux-amd64.tar.gz
-ARG GO_LOCAL_DIR=/usr/lib
-ARG GO_LOCAL=/usr/lib/$GO_VER.linux-amd64.tar.gz
-ADD $GO_DOWNLOAD_LOC $GO_LOCAL_DIR
-RUN cd $GO_LOCAL_DIR; tar xvf $GO_LOCAL; rm $GO_LOCAL
-ENV PATH "${PATH}:${GO_LOCAL_DIR}/go/bin"
+ENV GO_VER=1.15.1
+RUN mkdir -p /opt && cd /opt \
+    && curl https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz | tar vzxf - \
+    && ln -sf $(pwd)/go/bin/* /usr/bin
 
 # dpcsh on BMC (arm)
 RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
