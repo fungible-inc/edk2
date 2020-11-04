@@ -85,6 +85,10 @@ RUN mkdir -p /opt && cd /opt \
     && curl https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz | tar vzxf - \
     && ln -sf $(pwd)/go/bin/* /usr/bin
 
+#storage agent
+RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+	thrift-compiler
+
 # dpcsh on BMC (arm)
 RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	gcc-9-arm-linux-gnueabi \
