@@ -49,8 +49,13 @@ Use these instructions for installations on Ubuntu 18.04.  Don't use the snap in
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
 sudo apt-get update 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-compose
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 sudo usermod -aG docker your_userid
+# debian docker-compose is too old, 1.17. May need to replace following when reving base image with apt-get install
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.0/docker-compose-$(uname -s)-$(uname -m)" \
+	-o /usr/bin/docker-compose \
+	&& sudo chmod +x /usr/bin/docker-compose
+
 ```
 #### Note: Example of building funos-f1 using docker image:
 Though docker image bld_funos is sufficient for most of the build tasks above command may not be very user friendly considering all the options that are needed for smooth operation. Also, running the tests requires user account inside the container for which one needs to build a user wrapper image on their local machine. So it is recommended that users just create one wrapper bld_funos image and use that instead. For example, assuming your current working directory is your WORKSPACE populated with needed git repositories then you could use following command.
