@@ -79,7 +79,7 @@ RUN curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64 && \
 
 # yocto
 # hardcoded to master dev-line as yocto will probably never branch
-ARG YOCTO_BLD=814
+ARG YOCTO_BLD=862
 ARG yocto=http://dochub.fungible.local/doc/jenkins/master/cc-linux-yocto/$YOCTO_BLD
 ARG poky_x86=poky-glibc-x86_64-fun-image-x86-64combo-core2-64-qemux86-64-toolchain-3.0.2.sh
 ARG poky_mips=poky-glibc-x86_64-fun-image-mips64r6hv-mipsisa64r6-mips64r6-toolchain-3.0.2.sh
