@@ -22,7 +22,7 @@ usage () {
 prepare_ws () {
 	# touch img file if image pulled / exists 
 	echo Pulling docker image ${REG_IMG}...
-	docker pull ${REG_IMG} 2> /dev/null > ${IMG}.pull.log
+	docker pull ${REG_IMG}:master 2> /dev/null > ${IMG}.pull.log
 	if [[ $? -eq 0 ]]
 	then
 		iso_date=$(docker inspect -f '{{ .Created }}' ${REG_IMG}:master)
