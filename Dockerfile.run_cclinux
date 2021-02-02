@@ -55,7 +55,7 @@ RUN pip2 install --upgrade-strategy only-if-needed \
 	ipaddress \
 	cffi \
 	nnpy \
-	config \
+	config==0.4.2 \
 	deepdiff \
 	enum34 \
 	jsonmerge \
