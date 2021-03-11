@@ -37,6 +37,7 @@ RUN apt-get update -qq \
 		python-jinja2 \
 		python-yaml \
 		qemu-utils \
+		elfutils \
 		rsync \
 		software-properties-common \
 		unzip \
