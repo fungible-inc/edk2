@@ -12,5 +12,4 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 
-RUN pip3 install pycryptodome==3.9.3 bitarray==1.0.1 jsonschema==3.0.1 jstyleson==0.0.2
-
+RUN pip3 install pycryptodome==3.9.3 bitarray==1.5.3 jsonschema==3.0.1 jstyleson==0.0.2 requests==2.18.4 asn1crypto==0.24.0 cryptography==2.1.4
