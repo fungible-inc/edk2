@@ -13,6 +13,7 @@ RUN apt-get update \
 		libtool \
 		make \
 		ninja-build \
+		pandoc \
 		pkg-config \
 		python-jinja2 \
 		python-yaml \
