@@ -18,4 +18,4 @@ RUN apt-get update \
 		python-yaml \
 		python2.7 
 
-RUkeN apt-get clean
+RUN apt-get clean
