@@ -1,7 +1,6 @@
 # build funsdk docker
 ARG DOC_REG
 
-FROM ${DOC_REG}/fun_external:latest AS fun_external-base
 FROM ${DOC_REG}/run_cclinux:latest
 
 ARG GIT_SSL_NO_VERIFY=1
@@ -139,9 +138,6 @@ RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 # comment by Jialin: ydk has nested cmake submodules, which I don't really want to touch :-)
 # hence symlink
 RUN	ln -s libssh.so /usr/lib/x86_64-linux-gnu/libssh_threads.so
-
-# NOTE: /fun_external is hardcoded in funcp builds. So need to install these under that dir.
-COPY --from=fun_external-base /fun_external /fun_external
 
 # all apt-get commands should be above this
 # clean up
