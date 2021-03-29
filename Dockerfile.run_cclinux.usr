@@ -13,7 +13,7 @@ ARG arg_user
 ARG arg_uid
 
 RUN ssh-keygen -A \
-	&& mkdir -p /var/run/sshd /fun_external \
+	&& mkdir -p /var/run/sshd \
 	&& /bin/rm -f /var/log/lastlog /var/log/faillog \
 	&& useradd -l -m -u $arg_uid -s /bin/sh $arg_user \
 	&& echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
