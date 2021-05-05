@@ -46,7 +46,7 @@ RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar z
 	make install && \
 	rm -rf /librdkafka-1.0.0
 
-RUN curl -s https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
+RUN curl -s https://dl.google.com/go/go1.15.linux-amd64.tar.gz | tar xvz -C /usr/local 
 ENV PATH "${PATH}:/usr/local/go/bin"
 
 # Protobuf? are they stupid or what? nobody else has read permission except user who installs it! 
