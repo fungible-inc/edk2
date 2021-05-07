@@ -1,0 +1,43 @@
+# ubunut 20.04
+FROM ubuntu:focal-20201008
+
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+		python2 \
+		ca-certificates \
+		curl \
+		ssh \
+		time
+# For now set default version of python to 2 until all references to python are
+# either upgraded to 3 or changed to python2
+RUN ln -s /usr/bin/python2 /usr/bin/python
+
+# Also install pip2 untill all are changed to pip3
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
+		
+# nanomsg installation requires ldconfig
+RUN ldconfig
+
+RUN pip2 install --upgrade-strategy only-if-needed \
+	bitstring==3.1.7 \
+	pyyaml==5.4.1 \
+	six==1.16.0 \
+	tabulate==0.8.9 \
+	typing==3.10.0.0 \
+	ipaddress==1.0.23 \
+	cffi==1.14.5 \
+	config==0.4.2 \
+	deepdiff==3.3.0 \
+	enum34==1.1.10 \
+	jsonmerge==1.8.0 \
+	netaddr==0.8.0 \
+	ctypesgen==1.0.2 \
+	cmd2==0.8.9 \
+	prettytable==1.0.1
+
+
+# all apt-get commands should be above this
+# clean up
+RUN apt-get clean
+
+CMD ["/bin/bash"]

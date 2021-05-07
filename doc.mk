@@ -26,6 +26,7 @@ images += $(arg_user)/bld_fun_on_demand
 #images += run_sc
 images += bld_sc
 images += $(arg_user)/bld_sc
+images += fun_debugbase
 
 all: $(images)
 
@@ -145,5 +146,9 @@ integ_test: Dockerfile.integ_test
 
 # bld_apigateway
 bld_apigateway: Dockerfile.bld_apigateway
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# fun_debugbase
+fun_debugbase: Dockerfile.fun_debugbase
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
