@@ -19,6 +19,7 @@ RUN apt-get update -qq \
 		gpg-agent \
 		libattr1-dev \
 		libcap-dev \
+		libcap-ng-dev \
 		libelf-dev \
 		libfdt-dev \
 		libguestfs-tools \
