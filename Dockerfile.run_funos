@@ -23,7 +23,9 @@ ENV ASAN_OPTIONS disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1
 
 # For now set default version of python to 2 until all references to python are
 # either upgraded to 3 or changed to python2
-RUN ln -s /usr/bin/python2 /usr/bin/python
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -qq --yes --no-install-recommends \
+	python-is-python2
 
 # Also install pip2 untill all are changed to pip3
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && python2 get-pip.py && /bin/rm get-pip.py
