@@ -89,7 +89,8 @@ RUN mkdir -p /opt && cd /opt \
     && ln -sf $(pwd)/go/bin/* /usr/bin
 
 #storage agent
-RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+RUN	apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	thrift-compiler
 #storage agent's async_notification_handler
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
@@ -101,12 +102,14 @@ RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git &
 
 
 # dpcsh on BMC (arm)
-RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+RUN	apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	gcc-9-arm-linux-gnueabi \
 	libc6-dev-armel-cross
 
 # Libfunq requirements
-RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+RUN	apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	libpci-dev \
 	libpcap-dev \
 	libreadline-dev
@@ -117,7 +120,8 @@ RUN pip2 install \
 	cryptography
 
 # FunCP
-RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+RUN	apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	debhelper \
 	devscripts \
 	doxygen \
