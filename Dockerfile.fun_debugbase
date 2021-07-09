@@ -1,5 +1,5 @@
 # ubunut 20.04
-FROM ubuntu:focal-20201008
+FROM ubuntu:focal-20210609
 
 RUN apt-get update -qq \
 	&& apt-get install -qq --yes --no-install-recommends \

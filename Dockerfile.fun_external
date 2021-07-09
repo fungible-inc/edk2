@@ -1,5 +1,5 @@
 # ubunut 20.04
-FROM ubuntu:focal-20201008
+FROM ubuntu:focal-20210609
 
 ARG DOC_REG
 ARG GIT_SSL_NO_VERIFY=1
