@@ -49,10 +49,18 @@ RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar z
 RUN curl -s https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz | tar xvz -C /usr/local 
 ENV PATH "${PATH}:/usr/local/go/bin"
 
+# install go-swagger
+RUN curl -o /usr/local/bin/swagger -L'#' \
+	https://github.com/go-swagger/go-swagger/releases/download/v0.23.0/swagger_linux_amd64 && \
+	chmod +x /usr/local/bin/swagger
+
 # Protobuf? are they stupid or what? nobody else has read permission except user who installs it! 
 RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \ 
 	mkdir /tmp/foo && unzip protoc-3.7.0-linux-x86_64.zip -d /tmp/foo && chmod -R a+rx /tmp/foo && \
 	cd /tmp/foo && cp -r bin include /usr/local && /bin/rm -rf /tmp/foo
+
+# install protoc-gen-go plugin (to generate Go code from protobuf file)
+RUN GO111MODULE=on go get github.com/golang/protobuf/protoc-gen-go@v1.5.2
 
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
 	cd cpp_redis && \
