@@ -60,7 +60,7 @@ RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/pr
 	cd /tmp/foo && cp -r bin include /usr/local && /bin/rm -rf /tmp/foo
 
 # install protoc-gen-go plugin (to generate Go code from protobuf file)
-RUN GO111MODULE=on go get github.com/golang/protobuf/protoc-gen-go@v1.5.2
+RUN GO111MODULE=on GOBIN=/usr/local/go/bin go get github.com/golang/protobuf/protoc-gen-go@v1.5.2
 
 RUN git clone --branch 4.4.0-beta.1 https://github.com/cpp-redis/cpp_redis.git && \
 	cd cpp_redis && \
