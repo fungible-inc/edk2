@@ -83,7 +83,7 @@ RUN wget -q ${yocto}/x86_64/${poky_x86} \
 	&& rm -f ${poky_x86} ${poky_mips}
 
 #golang
-ENV GO_VER=1.15.8
+ENV GO_VER=1.16.5
 RUN mkdir -p /opt && cd /opt \
     && curl https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz | tar vzxf - \
     && ln -sf $(pwd)/go/bin/* /usr/bin
