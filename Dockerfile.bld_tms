@@ -1,0 +1,15 @@
+FROM golang:1.16.5-alpine
+
+RUN set -ex \
+    && apk add --no-cache --virtual .buildpack-deps \
+    make \
+    build-base \
+    git \
+    docker \
+    docker-compose \
+    net-tools \
+    jq \
+    bash \
+    kafkacat
+
+WORKDIR /src

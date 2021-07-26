@@ -20,6 +20,8 @@ images += bld_fpga
 images += $(arg_user)/bld_fpga
 images += bld_hd
 images += bld_golang
+images += bld_tms
+images += run_ubuntu_tms
 images += bld_gccgo
 images += bld_apigateway
 images += $(arg_user)/bld_fun_on_demand
@@ -126,6 +128,14 @@ bld_hd: Dockerfile.bld_hd
 
 # bld_golang
 bld_golang: Dockerfile.bld_golang
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# bld_tms
+bld_tms: Dockerfile.bld_tms
+	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
+
+# run_ubuntu_tms
+run_ubuntu_tms: Dockerfile.run_ubuntu_tms
 	$(FUNDOCKER) -a $(ACTION) -i $@ -f $<
 
 # bld_gccgo

@@ -1,0 +1,17 @@
+FROM ubuntu:20.04
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
+    net-tools \
+    iputils-ping \
+    iproute2 \
+    tcpdump \
+    netcat-openbsd \
+    iptables \
+    ebtables \
+    nftables \
+    bridge-utils \
+    traceroute \
+    ethtool \
+    curl \
+    socat \
+    conntrack
