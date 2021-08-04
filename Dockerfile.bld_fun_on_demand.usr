@@ -14,7 +14,7 @@ ARG arg_uid
 
 RUN apt-get update && apt-get install --yes python-pip git wget ssh curl
 
-RUN pip install jinja2 netifaces virtualenv pbr mock
+RUN pip install jinja2 netifaces virtualenv pbr mock requests
 
 # For testing files that have database code.
 RUN pip install SQLAlchemy
