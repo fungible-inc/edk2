@@ -12,12 +12,15 @@ FROM ${DOC_REG}/bld_insyde:latest
 ARG arg_user
 ARG arg_uid
 
+RUN apt-get update -qq \
+	&& apt-get install -qq --yes --no-install-recommends \
+	gdb-multiarch \
+	sudo
+
 RUN /bin/rm -f /var/log/lastlog /var/log/faillog && \
 	useradd -l -m -u $arg_uid -s /bin/sh $arg_user && \
 	mkdir -p /etc/sudoers.d/ && \
 	echo "$arg_user ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/local
-
-RUN apt-get update
 
 RUN echo "dash dash/sh boolean false" | debconf-set-selections && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
