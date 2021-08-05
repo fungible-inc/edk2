@@ -1,17 +1,17 @@
-# Dockerfile References: https://docs.docker.com/engine/reference/builder/
-
 # Start from specific golang base image
-FROM golang:1.13.7-alpine3.11
-RUN apk update && apk add git
-RUN apk --no-cache add ca-certificates
-RUN apk add --no-cache bash
+FROM golang:1.16.5-alpine
 
-WORKDIR /workspace
-
-RUN git clone https://github.com/go-swagger/go-swagger --branch v0.21.0
-
-WORKDIR go-swagger
-
-RUN go install ./cmd/swagger
+RUN set -ex; \
+    apk add --no-cache --virtual .buildpack-deps \
+    git \
+    make \
+    build-base \
+    docker \
+    docker-compose \
+    net-tools \
+    jq \
+    curl \
+    kafkacat \
+    && rm -rf /var/cache/apk/*
 
 WORKDIR /workspace
