@@ -2,7 +2,7 @@
 #
 # toggle between latest and version
 ARG DOC_REG
-FROM ${DOC_REG}/bld_insyde:latest
+FROM ${DOC_REG}/bld_insyde:master
 
 # There are no defaults for adduser, so one must pass them at build time as
 # docker build -t user/funos_build --build-arg arg_user=$(id -un) --build-arg arg_uid=$(id -u) .
