@@ -1,5 +1,5 @@
-# ubunut 20.04.2 LTS with kernel version 5.4.0-80-generic
-FROM ubuntu:focal-20210609
+# ubunut 18.04.2 with kernel version 4.18.0-16
+FROM ubuntu:bionic-20190307
 
 RUN apt-get update -qq \
 	&& apt-get install -qq --yes --no-install-recommends \
