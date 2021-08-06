@@ -94,11 +94,11 @@ build)
 	docker rmi $IMG 2> /dev/null || :
 	docker build -t $IMG -f $DOC_FILE $DOCKER_OPTIONS . > ${IMG}.bld.log
 	[[ $? -ne 0 ]] && cat ${IMG}.bld.log && exit 1
-	docker tag $IMG ${REG_IMG}:latest
+	#docker tag $IMG ${REG_IMG}:latest
 	docker tag $IMG ${REG_IMG}:master
 	if [[ $_PUSH_IMAGE == 'true' ]]
 	then
-		docker push ${REG_IMG}:latest
+		#docker push ${REG_IMG}:latest
 		docker push ${REG_IMG}:master
 		[[ $? -ne 0 ]] && echo Failed to push ${REG_IMG} && exit 1
 		echo ${REG_IMG} >> pushed

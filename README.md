@@ -29,7 +29,7 @@ Any user can build wrapper images for their use on their laptops or development 
 FunOS related builds based on FunJenkins pipeline use these docker images via docker pipeline plugin. Any user can make use of these docker images to build and run tests inside a container on their development machines. For example:
 
 ```
-$> docker pull docker.fungible.com/bld_funos:latest
+$> docker pull docker.fungible.com/bld_funos:master # replace master for other dev-lines when needed.
 $> docker run [options] docker.fungible.com/bld_funos [build commands]
 ```
 #### Note: 

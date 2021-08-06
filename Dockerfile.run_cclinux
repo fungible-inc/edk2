@@ -1,11 +1,11 @@
 # runtime ccLinux
 ARG DOC_REG
-FROM ${DOC_REG}/zmq:latest AS zmq-base
-FROM ${DOC_REG}/hiredis_swss:latest AS redis-base
-FROM ${DOC_REG}/nanomsg:latest AS nanomsg-base
-FROM ${DOC_REG}/fun_external:latest AS fun_external-base
+FROM ${DOC_REG}/zmq:master AS zmq-base
+FROM ${DOC_REG}/hiredis_swss:master AS redis-base
+FROM ${DOC_REG}/nanomsg:master AS nanomsg-base
+FROM ${DOC_REG}/fun_external:master AS fun_external-base
 
-FROM ${DOC_REG}/run_funos:latest
+FROM ${DOC_REG}/run_funos:master
 
 ARG GIT_SSL_NO_VERIFY=1
 ARG DEBIAN_FRONTEND=noninteractive
