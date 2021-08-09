@@ -117,8 +117,7 @@ RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 	libreadline-dev
 
 # SBPFirmware
-RUN pip2 install \
-	PyCrypto \
+RUN pip3 install \
 	cryptography
 
 # FunCP
