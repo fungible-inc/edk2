@@ -72,6 +72,12 @@ RUN mkdir /opt/cross \
 	&& curl -sS ${DOCHUB_URL}/sw/tools/mips/Codescape.GNU.Tools.Package.2020.06-01.for.MIPS.MTI.Bare.Metal.CentOS-6.x86_64.tar.gz | \
 		tar xfz - -C /opt/cross
 
+# arm64 gcc
+# originally downloaded from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads
+# cached on dochub in case the remote URI changes
+# Use a baremetal toolchain from arm instead of standard ubuntu packages, as those only provide linux toolchains
+RUN curl -sS ${DOCHUB_URL}/sw/tools/arm/gcc-arm-10.2-2020.11-x86_64-aarch64-none-elf.tar.xz | tar xfJ - -C /opt/cross
+
 # yocto
 # hardcoded to master dev-line as yocto will probably never branch
 ARG YOCTO_BLD=871
@@ -144,6 +150,10 @@ RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
 # comment by Jialin: ydk has nested cmake submodules, which I don't really want to touch :-)
 # hence symlink
 RUN	ln -s libssh.so /usr/lib/x86_64-linux-gnu/libssh_threads.so
+
+# tools for arm64 bootloader/uefi
+RUN	apt-get install -qq --yes --no-install-recommends --no-install-suggests \
+	acpica-tools
 
 # all apt-get commands should be above this
 # clean up
