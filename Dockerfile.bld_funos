@@ -5,8 +5,11 @@ FROM ${DOC_REG}/run_cclinux:master
 
 ARG GIT_SSL_NO_VERIFY=1
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -qq \
-	&& apt-get install -qq --yes --no-install-recommends \
+# create a persistent apt-cache until the end of this Dockerfile
+RUN apt-get update -qq
+
+# Packages for funos
+RUN apt-get install -qq --yes --no-install-recommends \
 		automake \
 		bc \
 		bison \
