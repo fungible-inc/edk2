@@ -12,6 +12,10 @@ RUN set -ex; \
     jq \
     curl \
     kafkacat \
+    openjdk11 \
+    bash \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /workspace
+
+RUN curl http://dochub.fungible.local/doc/sw/fc-deploy/deployment/helm-3.2.2/helm -o /usr/local/bin/helm && chmod +x /usr/local/bin/helm
