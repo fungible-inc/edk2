@@ -10,6 +10,7 @@ RUN apt-get update \
 		libelf-dev \
 		libnl-3-dev \
 		libnl-route-3-dev \
+		libssl-dev \
 		libtool \
 		make \
 		ninja-build \
@@ -26,6 +27,6 @@ RUN apt-get update \
 		pkg-config \
 		python-jinja2 \
 		python-yaml \
-		python2.7 
+		python2.7
 
 RUN apt-get clean
